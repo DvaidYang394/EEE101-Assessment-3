@@ -2,7 +2,7 @@
  * Copyright (C) 2018
  * @File name: 1718112_3.c
  * @Author: Ziqi Yang
- * @Version: 0.0.0
+ * @Version: 0.3.0
  * @Date: 2018-11-21
  * @Description: EEE101-Assessment-3 Project
  *				 A game of rock, scissors and paper for user to against computer.
@@ -60,6 +60,38 @@ typedef enum
 	normal
 } Character_Size;
 
+/**
+* @enum	Game_Player
+* @brief	a enum type to represent the winner of game.
+* @date	2018-11-2
+*
+* @var	computer	winner is computer.
+* @var	user		winner is user.
+* @var	none		nobody win.
+*/
+typedef enum
+{
+	computer = 0,
+	player,
+	none
+} Game_Player;
+
+/**
+* @enum	General_Select
+* @brief	a enum type to represent the selected character of computer or user.
+* @date	2018-11-2
+*
+* @var	rock		rock selected.
+* @var	scissors	scissors selected.
+* @var	paper		paper selected.
+*/
+typedef enum
+{
+	rock = 0,
+	scissors,
+	paper
+} General_Select;
+
 typedef struct
 {
 	char			detail[256];
@@ -80,17 +112,35 @@ typedef struct
 
 typedef struct
 {
+	int				target;
+	int				win;
+	int				draw;
+	int				lose;
+	General_Result	result;
+} times_info;
+
+typedef struct
+{
 	name_info		name;
 	passwd_info		passwd;
-	int				record[1][5];
+	times_info		times;
+	int				final_win;
+	int				**record;
+	int				login;
 	file_info		file;
 } user_info;
 
 /* Function declaration Start. */
 char welcome_UI(void);
-void login_UI(void);
-void signup_UI(void);
+user_info login_UI(user_info user);
+user_info signup_UI(user_info user);
 char menu_UI(void);
+user_info times_UI(user_info user);
+General_Select computer_select_get(void);
+General_Select user_select_get(void);
+user_info rounds_UI(user_info user);
+Game_Player compare(General_Select computer_select, General_Select user_select);
+void final_UI(user_info user);
 void printf_position(char *data, int init_X, int init_Y);
 void printf_delta(char *data, int delta_X, int delta_Y);
 void print_rock(Character_Size size, int bias_X, int bias_Y);
@@ -101,6 +151,7 @@ void print_paper(Character_Size size, int bias_X, int bias_Y);
 int main(void)
 {
 	char welcome_choice, menu_choice;
+	user_info user = { {0,0},{0,0},{0,0,0,0,0},0,0,0,{0,0} };
 
 	system("mode con cols=100 lines=34");					/* Set the width of console is 100 and height is 34. */
 	system("color 1f");										/* Set the color of console background in blue and font in white. */
@@ -109,13 +160,24 @@ int main(void)
 		welcome_choice = welcome_UI();
 		if (welcome_choice == 'a')
 		{
-			login_UI();
-			menu_choice = menu_UI();
-			if (menu_choice == 'a');
-			else if (menu_choice == 'b');
-			else if (menu_choice == 'c');
+			user = login_UI(user);
+			while (user.login == 1)
+			{
+				menu_choice = menu_UI();
+				if (menu_choice == 'a')
+				{
+					user = times_UI(user);
+					user = rounds_UI(user);
+					final_UI(user);
+
+				}
+				else if (menu_choice == 'b');
+				else if (menu_choice == 'c');
+				else
+					user.login = 0;
+			}
 		}
-		else if(welcome_choice == 'b') signup_UI();
+		else if (welcome_choice == 'b') user = signup_UI(user);
 	} while (welcome_choice != 'c');
 
 	return 0;												/* Programm run successfully. */
@@ -186,11 +248,10 @@ char welcome_UI(void)
 	return user_choice[0];			/* Change the value on address option_choice to user_choice[0](to use in main function). */
 }
 
-void login_UI(void)
+user_info login_UI(user_info user)
 {
 	int i = 0, j = 0;
 	char target_user_passwd[256] = { 0 };
-	user_info user;
 
 	user.name.result = result_Error;
 	user.passwd.result = result_Error;
@@ -256,13 +317,14 @@ void login_UI(void)
 	}
 	fclose(user.file.pointer);
 	printf("\nLog in successfully, please wait for a few seconds...");
+	user.login = 1;
 	Sleep(2000);
+	return user;
 }
 
-void signup_UI(void)
+user_info signup_UI(user_info user)
 {
 	int i = 0, j = 0;
-	user_info user;
 
 	user.name.result = result_Error;
 	user.passwd.result = result_Error;
@@ -351,6 +413,7 @@ void signup_UI(void)
 	fclose(user.file.pointer);
 	printf("\nAccount created successfully!");
 	Sleep(1000);
+	return user;
 }
 
 char menu_UI(void)
@@ -401,6 +464,294 @@ char menu_UI(void)
 	}
 
 	return user_choice[0];
+}
+
+/**
+* @name	info_input
+* @brief	information input UI of the game.
+* @date	2018-11-2
+*
+* @param	user_name_addr	the first element address of the user name array.
+* @param	game_times		the times user want to play.
+* @param	name_length		the length of user name.
+*/
+user_info times_UI(user_info user)
+{
+	int i = 0;																	/* Declare i uses as run times of for loop. */
+	char user_times[256] = { 0 };
+	user.times.result = result_Error;
+
+	while (user.times.result == result_Error)
+	{
+		system("cls");
+		user.times.result = result_OK;							/* Pretend the times input is legal at first. */
+		printf("Enter the times you want to play(must be a POSITIVE INTEGER and SMALLER THAN 50!): ");
+		rewind(stdin);
+		gets(user_times);
+		rewind(stdin);
+
+		if (strlen(user_times) != 0)
+		{
+			for (i = 0; i < strlen(user_times); i++)		/* Check if the times input is number. */
+			{
+				if (!isdigit(user_times[i]))
+				{
+					user.times.result = result_Error;			/* The times is not number, input illegal. */
+					break;
+				}
+			}
+		}
+		if (user.times.result == result_OK)						/* Check if the times is less than 50. */
+		{
+			user.times.target = atoi(user_times);
+			if (user.times.target <= 0 || user.times.target >= 50) user.times.result = result_Error;		/* The times is not less than 50, input illegal. */
+		}
+		if (user.times.result == result_Error)
+		{
+			printf("\nThe times you input is illegal, please try again!\n");
+			Sleep(1500);
+		}
+	}
+
+	return user;
+}
+
+/**
+* @name	computer_select_get
+* @brief	generate and print computer select result.
+* @date	2018-11-2
+*
+* @return	the character computer choose: rock, scissors or paper.
+*/
+General_Select computer_select_get(void)
+{
+	int randnum = 0;										/* Declare randnum to store random number. */
+	General_Select computer_select;							/* Declare computer_select to store the character computer select. */
+
+	srand((unsigned int)time(NULL));						/* Generate a seed with time to produce a random number. */
+	randnum = rand() % 3;									/* Produce a random number among 0, 1, 2. */
+	switch (randnum)
+	{
+	case 0:
+		computer_select = rock;								/* Check and print computer character. */
+		print_rock(normal, 0, rounds_Y_character_pos);
+		break;
+	case 1:
+		computer_select = scissors;
+		print_scissors(normal, 0, rounds_Y_character_pos);
+		break;
+	default:
+		computer_select = paper;
+		print_paper(normal, 0, rounds_Y_character_pos);
+	}
+
+	return computer_select;									/* Return the character computer selected. */
+}
+
+/**
+* @name	user_select_get
+* @brief	choose and print user select result.
+* @date	2018-11-3
+*
+* @return	the character user choose: rock, scissors or paper.
+*/
+General_Select user_select_get(void)
+{
+	char select_input[256] = { 0 };							/* Declare select_input to store the character user select in string. */
+	int i = 0;												/* Declare i uses as run times of for loop. */
+	General_Result select_result = result_Error;			/* Declare to store the select_input result. */
+	General_Select user_select;								/* Declare user_select to store the character user select. */
+
+	printf("Please use a letter to choose what you want, the meanings are as follows:\n");
+	printf("r: Rock \t\t s: Scissors \t\t p: Paper\n\n");
+
+	while (select_result == result_Error)
+	{
+		printf_position("Computer choice is:", 0, 13);
+		printf_delta("Your choice is(r/s/p): ", 30, 0);
+		rewind(stdin);
+		gets(select_input);
+		rewind(stdin);
+
+		if (strlen(select_input) == 1)
+		{
+			switch (select_input[0])
+			{
+			case 'r':
+			case 's':
+			case 'p':
+				select_result = result_OK;					/* The input is legal. */
+				break;
+			default:
+				select_result = result_Error;				/* The input is illegal. */
+			}
+		}
+		if (select_result == result_Error)
+		{
+			printf("\nYour input is illegal, please try again!\n");
+			Sleep(1500);
+			printf_delta("", 0, -3);
+			for (i = 0; i < X_LENGTH; i++)
+				printf(" ");
+			printf("\n\n");
+			for (i = 0; i < X_LENGTH; i++)
+				printf(" ");
+		}
+	}
+
+	switch (select_input[0])
+	{
+	case 'r':
+		user_select = rock;														/* Assigning user select. */
+		print_rock(normal, rounds_user_X_pos, rounds_Y_character_pos);			/* Print normal size of user select character. */
+		break;
+	case 's':
+		user_select = scissors;
+		print_scissors(normal, rounds_user_X_pos, rounds_Y_character_pos);
+		break;
+	default:
+		user_select = paper;
+		print_paper(normal, rounds_user_X_pos, rounds_Y_character_pos);
+	}
+
+	return user_select;															/* Return the character user selected. */
+}
+
+/**
+* @name	rounds_UI
+* @brief	rounds UI of the game.
+* @date	2018-11-3
+*
+* @param	user_name_addr	the first element address of the user name array.
+* @param	game_times		the times user want to play.
+* @param	name_length		the length of user name.
+* @return	the final winner of game: computer, user or none.
+*/
+user_info rounds_UI(user_info user)
+{
+	int remain_games, i;		/* Declare variables:
+																			remain_games: store the remain times of game.
+																			computer_win: store the times of computer win.
+																			user_win: store the times of user win.*/
+	General_Select computer_select, user_select;			/* Declare to store the character computer and user select. */
+	Game_Player current_winner;				/* Declare to store the current and final winner of game. */
+
+	user.times.win = 0;
+	user.times.lose = 0;
+	user.times.draw = 0;
+	for (remain_games = user.times.target; remain_games > 0; remain_games--)		/* When the remain times of game is more than 0. */
+	{
+		system("cls");
+		printf("(If you want, press Ctrl + C to exit immediately during the game.)\n\n");
+		printf("You have %d times to play!\n\n", remain_games);
+		printf_delta("Score List:\n\n", 40, 0);
+		printf_delta("", 40, 0);
+		printf("%s(YOU): %d\n\n", user.name.detail, user.times.win);
+		printf_delta("", 40, 0);
+		printf("COMPUTER: %d\n\n", user.times.lose);
+
+		user_select = user_select_get();					/* Call user_select_get function and store user select to the variable. */
+		computer_select = computer_select_get();			/* Call computer_select_get function and store computer select to the variable. */
+		current_winner = compare(computer_select, user_select);		/* Call compare function and store current winner to the variable. */
+		if (current_winner == computer)
+		{
+			printf_position("Computer wins this time!\n", rounds_X_current_result_pos, rounds_Y_current_result_pos);
+			user.times.lose++;									/* Add times of computer win. */
+		}
+		else if (current_winner == player)
+		{
+			printf_position("You win this time!\n", rounds_X_current_result_pos, rounds_Y_current_result_pos);
+			user.times.win++;										/* Add times of user win. */
+		}
+		else
+		{
+			printf_position("Nobody wins this time!\n", rounds_X_current_result_pos, rounds_Y_current_result_pos);
+			user.times.draw++;
+		}
+
+		printf("\nPress \"Enter\" to continue game...");
+		rewind(stdin);
+		while (getchar() != '\n');							/* Get "Enter" to continue game. */
+		rewind(stdin);
+	}
+
+	/* Compare the times of computer and user win and judge and final winner. */
+	if (user.times.lose > user.times.win) user.final_win = 0;
+	else if (user.times.lose < user.times.win) user.final_win = 1;
+	else user.final_win = 2;
+
+	return user;									/* Return the final winner of the game. */
+}
+
+/**
+* @name	compare
+* @brief	compare the character that computer and user select.
+* @date	2018-11-3
+*
+* @param	computer_select		the character computer select.
+* @param	user_select			the character user select.
+* @return	current winner: computer, user or none.
+*/
+Game_Player compare(General_Select computer_select, General_Select user_select)
+{
+	Game_Player current_winner;								/* Declare current_winner to store current winner. */
+
+	if (computer_select == user_select) current_winner = none;		/* If the characters are same. Nobody win this time. */
+	else
+	{
+		switch (computer_select)							/* Logic to judge the winner. */
+		{
+		case rock:
+			if (user_select == rock) current_winner = none;
+			if (user_select == scissors) current_winner = computer;
+			if (user_select == paper) current_winner = player;
+			break;
+		case scissors:
+			if (user_select == rock) current_winner = player;
+			if (user_select == scissors) current_winner = none;
+			if (user_select == paper) current_winner = computer;
+			break;
+		default:
+			if (user_select == rock) current_winner = computer;
+			if (user_select == scissors) current_winner = player;
+			if (user_select == paper) current_winner = none;
+		}
+	}
+
+	return current_winner;									/* Return the current winner. */
+}
+
+/**
+* @name	final_UI
+* @brief	final UI of the game.
+* @date	2018-11-3
+*
+* @param	final_winner	the final winner.
+* @param	option_choice	the user choice that whether to play the game again or not.
+*/
+void final_UI(user_info user)
+{
+	General_Result user_result = result_Error;				/* Declare user_result to store the user input result. */
+	char user_choice[256] = { 0 };							/* Declare user_choice to store user choice as string. */
+	int i = 0;												/* Declare i uses as run times of for loop. */
+
+	system("cls");
+	switch (user.final_win)									/* Print different sentences with different final winner. */
+	{
+	case 0:
+		printf_delta("Sorry, you lose :(\n", 41, 0);
+		break;
+	case 1:
+		printf_delta("Congratulations! You win :)\n", 36, 0);
+		break;
+	default:
+		printf_delta("Nobody win the game =_=\n", 38, 0);
+	}
+
+	printf_delta("Press \"Enter\" to back to menu...", 34, 1);
+	while (getchar() != '\n');
+
+	return user_choice[0];		/* Change the value on address option_choice to user_choice[0](to use in main function). */
 }
 
 /**
