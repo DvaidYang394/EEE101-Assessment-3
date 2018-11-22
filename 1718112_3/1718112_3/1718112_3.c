@@ -87,9 +87,10 @@ typedef struct
 } user_info;
 
 /* Function declaration Start. */
-void welcome_UI(char *option_choice);
+char welcome_UI(void);
 void login_UI(void);
 void signup_UI(void);
+char menu_UI(void);
 void printf_position(char *data, int init_X, int init_Y);
 void printf_delta(char *data, int delta_X, int delta_Y);
 void print_rock(Character_Size size, int bias_X, int bias_Y);
@@ -99,18 +100,23 @@ void print_paper(Character_Size size, int bias_X, int bias_Y);
 
 int main(void)
 {
-	char *pOption_choice, option_choice;
-
-	pOption_choice = &option_choice;
+	char welcome_choice, menu_choice;
 
 	system("mode con cols=100 lines=34");					/* Set the width of console is 100 and height is 34. */
 	system("color 1f");										/* Set the color of console background in blue and font in white. */
-	do							/* Call welcome_UI function. */
+	do
 	{
-		welcome_UI(pOption_choice);
-		if (option_choice == 'a') login_UI();
-		else if(option_choice == 'b') signup_UI();
-	} while (option_choice != 'c');
+		welcome_choice = welcome_UI();
+		if (welcome_choice == 'a')
+		{
+			login_UI();
+			menu_choice = menu_UI();
+			if (menu_choice == 'a');
+			else if (menu_choice == 'b');
+			else if (menu_choice == 'c');
+		}
+		else if(welcome_choice == 'b') signup_UI();
+	} while (welcome_choice != 'c');
 
 	return 0;												/* Programm run successfully. */
 }
@@ -122,7 +128,7 @@ int main(void)
  *
  * @param	option_choice		the option user choose, which to decide start or exit game.
  */
-void welcome_UI(char *option_choice)
+char welcome_UI(void)
 {
 	char user_choice[256] = { 0 };							/* Declare user_choice array to store user choice string. */
 	int i = 0;												/* Declare i uses as run times of for loop. */
@@ -177,7 +183,7 @@ void welcome_UI(char *option_choice)
 		Sleep(1000);
 	}
 
-	*option_choice = user_choice[0];			/* Change the value on address option_choice to user_choice[0](to use in main function). */
+	return user_choice[0];			/* Change the value on address option_choice to user_choice[0](to use in main function). */
 }
 
 void login_UI(void)
@@ -249,6 +255,8 @@ void login_UI(void)
 		}
 	}
 	fclose(user.file.pointer);
+	printf("\nLog in successfully, please wait for a few seconds...");
+	Sleep(2000);
 }
 
 void signup_UI(void)
@@ -343,6 +351,56 @@ void signup_UI(void)
 	fclose(user.file.pointer);
 	printf("\nAccount created successfully!");
 	Sleep(1000);
+}
+
+char menu_UI(void)
+{
+	char user_choice[256] = { 0 };							/* Declare user_choice array to store user choice string. */
+	int i = 0;												/* Declare i uses as run times of for loop. */
+	General_Result user_result = result_Error;				/* Declare user_result to store the option input result. */
+
+	system("cls");
+	printf_position("Rock, Scissors and Paper GAME!\n\n", 35, 0);
+	printf_position("a. Start a new game.", 38, 3);
+	printf_position("b. Review game history.", 38, 5);
+	printf_position("c. Clear game history.", 38, 7);
+	printf_position("d. Logout.", 38, 9);
+	
+	while (user_result == result_Error)						/* When user input is illegal. */
+	{
+		printf_position("Your choice is: ", 39, 11);
+		rewind(stdin);
+		gets(user_choice);
+		rewind(stdin);
+
+		if (strlen(user_choice) == 1)						/* If the input is 1 character. */
+		{
+			switch (user_choice[0])							/* Judge the user choice. */
+			{
+			case 'a':
+			case 'b':
+			case 'c':
+			case 'd':
+				user_result = result_OK;					/* The choice is 'a' or 'b', input is legal. */
+				break;
+			default:
+				user_result = result_Error;					/* The choice is others, input is illegal. */
+			}
+		}
+		if (user_result == result_Error)					/* If the input is illegal. */
+		{
+			printf_delta("Your input is illegal, please try again!\n", 26, 1);
+			Sleep(1500);									/* Wait for 1500 ms. */
+			printf_delta("", 0, -3);						/* Change the position of cursor. */
+			for (i = 0; i < X_LENGTH; i++)					/* Clear incorrect output on console. */
+				printf(" ");
+			printf("\n\n");
+			for (i = 0; i < X_LENGTH; i++)
+				printf(" ");
+		}
+	}
+
+	return user_choice[0];
 }
 
 /**
