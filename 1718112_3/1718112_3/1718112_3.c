@@ -112,6 +112,7 @@ typedef struct
 
 typedef struct
 {
+	int				games;
 	int				target;
 	int				win;
 	int				draw;
@@ -141,6 +142,8 @@ General_Select user_select_get(void);
 user_info rounds_UI(user_info user);
 Game_Player compare(General_Select computer_select, General_Select user_select);
 void final_UI(user_info user);
+void datasave(user_info user);
+void review_UI(user_info user);
 void printf_position(char *data, int init_X, int init_Y);
 void printf_delta(char *data, int delta_X, int delta_Y);
 void print_rock(Character_Size size, int bias_X, int bias_Y);
@@ -151,7 +154,7 @@ void print_paper(Character_Size size, int bias_X, int bias_Y);
 int main(void)
 {
 	char welcome_choice, menu_choice;
-	user_info user = { {0,0},{0,0},{0,0,0,0,0},0,0,0,{0,0} };
+	user_info user = { {0,0},{0,0},{0,0,0,0,0,0},0,0,0,{0,0} };
 
 	system("mode con cols=100 lines=34");					/* Set the width of console is 100 and height is 34. */
 	system("color 1f");										/* Set the color of console background in blue and font in white. */
@@ -169,15 +172,18 @@ int main(void)
 					user = times_UI(user);
 					user = rounds_UI(user);
 					final_UI(user);
-
 				}
-				else if (menu_choice == 'b');
+				else if (menu_choice == 'b')
+				{
+					review_UI(user);
+				}
 				else if (menu_choice == 'c');
 				else
 					user.login = 0;
 			}
 		}
-		else if (welcome_choice == 'b') user = signup_UI(user);
+		else if (welcome_choice == 'b')
+			user = signup_UI(user);
 	} while (welcome_choice != 'c');
 
 	return 0;												/* Programm run successfully. */
@@ -208,7 +214,7 @@ char welcome_UI(void)
 
 	while (user_result == result_Error)						/* When user input is illegal. */
 	{
-		printf_position("Your choice is(a/b): ",34,17);
+		printf_position("Your choice is: ",42,17);
 		rewind(stdin);
 		gets(user_choice);
 		rewind(stdin);
@@ -266,9 +272,9 @@ user_info login_UI(user_info user)
 
 		for (i = 0; i < 256; i++)
 			user.file.name[i] = user.name.detail[i];
-		strcat(user.file.name, "_info.txt");
+		strcat(user.file.name, ".txt");
 		user.file.pointer = fopen(user.file.name, "r");
-		if (user.file.pointer == NULL)
+		if (user.file.pointer == NULL)						/* 遗留大小写无法区分的bug */
 		{
 			printf("\nThe user does not exist, please try again!\n");
 			Sleep(1500);
@@ -318,7 +324,7 @@ user_info login_UI(user_info user)
 	fclose(user.file.pointer);
 	printf("\nLog in successfully, please wait for a few seconds...");
 	user.login = 1;
-	Sleep(2000);
+	Sleep(1500);
 	return user;
 }
 
@@ -354,7 +360,7 @@ user_info signup_UI(user_info user)
 		{
 			for (i = 0; i < 256; i++)
 				user.file.name[i] = user.name.detail[i];
-			strcat(user.file.name, "_info.txt");
+			strcat(user.file.name, ".txt");
 			user.file.pointer = fopen(user.file.name, "r");
 			if (user.file.pointer != NULL)
 			{
@@ -408,7 +414,7 @@ user_info signup_UI(user_info user)
 		}
 	}
 	user.file.pointer = fopen(user.file.name, "w+");
-	fprintf(user.file.pointer, "%s,%s", user.name.detail, user.passwd.detail);
+	fprintf(user.file.pointer, "%s,%s\n%d\n", user.name.detail, user.passwd.detail, user.times.games);
 	rewind(user.file.pointer);
 	fclose(user.file.pointer);
 	printf("\nAccount created successfully!");
@@ -750,8 +756,66 @@ void final_UI(user_info user)
 
 	printf_delta("Press \"Enter\" to back to menu...", 34, 1);
 	while (getchar() != '\n');
-
+	datasave(user);
 	return user_choice[0];		/* Change the value on address option_choice to user_choice[0](to use in main function). */
+}
+
+void datasave(user_info user)
+{
+	system("cls");
+	int i = 0, j = 0;
+	char temp = 0;
+
+	user.file.pointer = fopen(user.file.name, "r+");
+	fseek(user.file.pointer, strlen(user.name.detail) + strlen(user.passwd.detail) + 3, SEEK_SET);
+	fscanf(user.file.pointer, "%d", &user.times.games);
+	user.times.games++;
+	fseek(user.file.pointer, -1, SEEK_CUR);				/* 遗留次数超过10次的bug */
+	fprintf(user.file.pointer, "%d", user.times.games);
+
+	user.record = (int*)malloc(user.times.games * sizeof(int));
+	for (i = 0; i < user.times.games; i++)
+		user.record[i] = (int*)malloc(6 * sizeof(int));
+	
+	fseek(user.file.pointer, 2, SEEK_CUR);
+	for (i = 0; i < user.times.games - 1; i++)
+	{
+		for (j = 0; j < 6; j++)
+			fscanf(user.file.pointer, "%d", &user.record[i][j]);
+		while (1)
+		{
+			fscanf(user.file.pointer, "%c", &temp);
+			if (temp == '\n') break;
+		}
+	}
+
+	user.record[user.times.games - 1][0] = user.times.games;
+	user.record[user.times.games - 1][1] = user.times.target;
+	user.record[user.times.games - 1][2] = user.times.win;
+	user.record[user.times.games - 1][3] = user.times.lose;
+	user.record[user.times.games - 1][4] = user.times.draw;
+	user.record[user.times.games - 1][5] = user.final_win;
+	
+	for (j = 0; j < 6; j++)
+	{
+		if (j < 5)
+			fprintf(user.file.pointer, "%d\t", user.record[user.times.games - 1][j]);
+		else
+			fprintf(user.file.pointer, "%d\n", user.record[user.times.games - 1][j]);
+	}
+	fclose(user.file.pointer);
+	system("pause");
+
+	for (i = 0; i < user.times.games; i++)
+		free(user.record[i]);
+	free(user.record);
+}
+
+void review_UI(user_info user)
+{
+	system("cls");
+	printf_position("Game History\n", 44, 1);
+	system("pause");
 }
 
 /**

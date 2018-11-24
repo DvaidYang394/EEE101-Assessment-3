@@ -1,23 +1,32 @@
 ﻿  1718112_3.c
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(213): warning C4013: 'gets' undefined; assuming extern returning int
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(294): warning C4018: '<': signed/unsigned mismatch
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(269): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(219): warning C4013: 'gets' undefined; assuming extern returning int
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(300): warning C4018: '<': signed/unsigned mismatch
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(275): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(90): note: see declaration of 'strcat'
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(270): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(276): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note: see declaration of 'fopen'
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(289): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(295): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note: see declaration of 'fscanf'
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(342): warning C4018: '<': signed/unsigned mismatch
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(386): warning C4018: '<': signed/unsigned mismatch
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(357): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(348): warning C4018: '<': signed/unsigned mismatch
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(392): warning C4018: '<': signed/unsigned mismatch
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(363): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\string.h(90): note: see declaration of 'strcat'
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(358): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(364): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note: see declaration of 'fopen'
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(410): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(416): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note: see declaration of 'fopen'
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(495): warning C4018: '<': signed/unsigned mismatch
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(632): warning C4101: 'i': unreferenced local variable
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(754): warning C4098: 'final_UI': 'void' function returning a value
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(863): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
-f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(900): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(501): warning C4018: '<': signed/unsigned mismatch
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(638): warning C4101: 'i': unreferenced local variable
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(760): warning C4098: 'final_UI': 'void' function returning a value
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(776): warning C4047: '=': 'int **' differs in levels of indirection from 'int *'
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(769): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note: see declaration of 'fopen'
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(771): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note: see declaration of 'fscanf'
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(784): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note: see declaration of 'fscanf'
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(787): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note: see declaration of 'fscanf'
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(927): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
+f:\xjtlu\lessons\year 2 semester 1\eee101\assessment 3\1718112_3\1718112_3\1718112_3.c(964): warning C4244: 'function': conversion from 'double' to 'int', possible loss of data
   1718112_3.vcxproj -> F:\XJTLU\Lessons\Year 2 Semester 1\EEE101\Assessment 3\1718112_3\Debug\1718112_3.exe
