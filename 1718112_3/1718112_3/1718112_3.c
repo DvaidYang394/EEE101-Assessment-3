@@ -1,8 +1,8 @@
-/*************************************************************************************
+ï»¿/*************************************************************************************
  * Copyright (C) 2018
  * @File name: 1718112_3.c
  * @Author: Ziqi Yang
- * @Version: 1.0.0
+ * @Version: 1.0.1
  * @Date: 2018-11-25
  * @Description: EEE101-Assessment-3 Project
  *				 A game of rock, scissors and paper for user to against computer.
@@ -274,7 +274,7 @@ user_info login_UI(user_info user)
 			user.file.name[i] = user.name.detail[i];
 		strcat(user.file.name, ".txt");
 		user.file.pointer = fopen(user.file.name, "r");
-		if (user.file.pointer == NULL)						/* ÒÅÁô´óÐ¡Ð´ÎÞ·¨Çø·ÖµÄbug */
+		if (user.file.pointer == NULL)						/* ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡Ð´ï¿½Þ·ï¿½ï¿½ï¿½ï¿½Öµï¿½bug */
 		{
 			printf("\nThe user does not exist, please try again!\n");
 			Sleep(1500);
@@ -757,7 +757,6 @@ void final_UI(user_info user)
 	printf_delta("Press \"Enter\" to back to menu...", 34, 1);
 	while (getchar() != '\n');
 	datasave(user);
-	return user_choice[0];		/* Change the value on address option_choice to user_choice[0](to use in main function). */
 }
 
 void datasave(user_info user)
@@ -768,11 +767,11 @@ void datasave(user_info user)
 	fseek(user.file.pointer, strlen(user.name.detail) + strlen(user.passwd.detail) + 3, SEEK_SET);
 	fscanf(user.file.pointer, "%d", &user.times.games);
 	user.times.games++;
-	fseek(user.file.pointer, -1, SEEK_CUR);				/* ÒÅÁô´ÎÊý³¬¹ý10´ÎµÄbug */
+	fseek(user.file.pointer, -1, SEEK_CUR);				/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½10ï¿½Îµï¿½bug */
 	fprintf(user.file.pointer, "%d", user.times.games);
-	user.record = (int*)malloc(user.times.games * sizeof(int));
+	user.record = malloc(user.times.games * sizeof(int));
 	for (i = 0; i < user.times.games; i++)
-		user.record[i] = (int*)malloc(6 * sizeof(int));
+		user.record[i] = malloc(6 * sizeof(int));
 
 	fseek(user.file.pointer, 2, SEEK_CUR);
 	for (i = 0; i < user.times.games - 1; i++)
@@ -792,13 +791,14 @@ void datasave(user_info user)
 	user.record[user.times.games - 1][4] = user.times.draw;
 	user.record[user.times.games - 1][5] = user.final_win;
 
-	for (j = 0; j < 6; j++)								/* ÒÅÁô²»ÏÔÊ¾µÚ¶þ´Î¼ÇÂ¼µÄbug */
+	for (j = 0; j < 6; j++)								/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½Ú¶ï¿½ï¿½Î¼ï¿½Â¼ï¿½ï¿½bug */
 	{
 		if (j < 5)
 			fprintf(user.file.pointer, "%d\t", user.record[user.times.games - 1][j]);
 		else
 			fprintf(user.file.pointer, "%d\n", user.record[user.times.games - 1][j]);
 	}
+	rewind(user.file.pointer);
 	fclose(user.file.pointer);
 	for (i = 0; i < user.times.games; i++)
 		free(user.record[i]);
@@ -811,14 +811,14 @@ void review_UI(user_info user)
 	char temp = 0;
 
 	system("cls");
-	printf_position("Game History\n", 44, 1);
+	printf_position("Game History\n", 41, 1);
 	user.file.pointer = fopen(user.file.name, "r+");
 	fseek(user.file.pointer, strlen(user.name.detail) + strlen(user.passwd.detail) + 3, SEEK_SET);
 	fscanf(user.file.pointer, "%d", &user.times.games);
 
-	user.record = (int*)malloc(user.times.games * sizeof(int));
+	user.record = malloc(user.times.games * sizeof(int));
 	for (i = 0; i < user.times.games; i++)
-		user.record[i] = (int*)malloc(6 * sizeof(int));
+		user.record[i] = malloc(6 * sizeof(int));
 	
 	fseek(user.file.pointer, 2, SEEK_CUR);
 	for (i = 0; i < user.times.games; i++)
@@ -838,7 +838,7 @@ void review_UI(user_info user)
 	for (i = 0; i < 46; i++)
 		printf("-");
 	printf("\n");
-	for (i = 0; i < user.times.games - 1; i++)			/* ÒÅÁôµÚ¶þ´ÎÎÞ·¨¼ÇÂ¼µÄbug */
+	for (i = 0; i < user.times.games - 1; i++)			/* ï¿½ï¿½ï¿½ï¿½Ú¶ï¿½ï¿½ï¿½ï¿½Þ·ï¿½ï¿½ï¿½Â¼ï¿½ï¿½bug */
 	{
 		printf_delta("", 24, 0);
 		for (j = 0; j < 6; j++)
@@ -895,11 +895,12 @@ void clear_UI(user_info user)
 		}
 	}
 
-	if (user_choice[0] == 'y')								/* ÒÅÁôÇå³ýºóµÚÒ»´ÎÓÎÏ·ÎÞ·¨Ìí¼Ó¼ÇÂ¼µÄbug */
+	if (user_choice[0] == 'y')								/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ï·ï¿½Þ·ï¿½ï¿½ï¿½Ó¼ï¿½Â¼ï¿½ï¿½bug */
 	{
 		user.times.games = 0;
 		user.file.pointer = fopen(user.file.name, "w+");
 		fprintf(user.file.pointer, "%s,%s\n%d\n", user.name.detail, user.passwd.detail, user.times.games);
+		rewind(user.file.pointer);
 		fclose(user.file.pointer);
 
 		printf_delta("Clear successfully!", 40, 1);
