@@ -2,8 +2,8 @@
  * Copyright (C) 2018
  * @File name: 1718112_3.c
  * @Author: Ziqi Yang
- * @Version: 0.3.0
- * @Date: 2018-11-21
+ * @Version: 1.0.0
+ * @Date: 2018-11-25
  * @Description: EEE101-Assessment-3 Project
  *				 A game of rock, scissors and paper for user to against computer.
 *************************************************************************************/
@@ -144,6 +144,7 @@ Game_Player compare(General_Select computer_select, General_Select user_select);
 void final_UI(user_info user);
 void datasave(user_info user);
 void review_UI(user_info user);
+void clear_UI(user_info user);
 void printf_position(char *data, int init_X, int init_Y);
 void printf_delta(char *data, int delta_X, int delta_Y);
 void print_rock(Character_Size size, int bias_X, int bias_Y);
@@ -174,10 +175,9 @@ int main(void)
 					final_UI(user);
 				}
 				else if (menu_choice == 'b')
-				{
 					review_UI(user);
-				}
-				else if (menu_choice == 'c');
+				else if (menu_choice == 'c')
+					clear_UI(user);
 				else
 					user.login = 0;
 			}
@@ -234,7 +234,7 @@ char welcome_UI(void)
 		}
 		if (user_result == result_Error)					/* If the input is illegal. */
 		{
-			printf_delta("Your input is illegal, please try again!\n", 26, 1);
+			printf_delta("Your input is illegal, please try again!\n", 30, 1);
 			Sleep(1500);									/* Wait for 1500 ms. */
 			printf_delta("", 0, -3);						/* Change the position of cursor. */
 			for (i = 0; i < X_LENGTH; i++)					/* Clear incorrect output on console. */
@@ -458,7 +458,7 @@ char menu_UI(void)
 		}
 		if (user_result == result_Error)					/* If the input is illegal. */
 		{
-			printf_delta("Your input is illegal, please try again!\n", 26, 1);
+			printf_delta("Your input is illegal, please try again!\n", 30, 1);
 			Sleep(1500);									/* Wait for 1500 ms. */
 			printf_delta("", 0, -3);						/* Change the position of cursor. */
 			for (i = 0; i < X_LENGTH; i++)					/* Clear incorrect output on console. */
@@ -762,21 +762,18 @@ void final_UI(user_info user)
 
 void datasave(user_info user)
 {
-	system("cls");
 	int i = 0, j = 0;
 	char temp = 0;
-
 	user.file.pointer = fopen(user.file.name, "r+");
 	fseek(user.file.pointer, strlen(user.name.detail) + strlen(user.passwd.detail) + 3, SEEK_SET);
 	fscanf(user.file.pointer, "%d", &user.times.games);
 	user.times.games++;
 	fseek(user.file.pointer, -1, SEEK_CUR);				/* 遗留次数超过10次的bug */
 	fprintf(user.file.pointer, "%d", user.times.games);
-
 	user.record = (int*)malloc(user.times.games * sizeof(int));
 	for (i = 0; i < user.times.games; i++)
 		user.record[i] = (int*)malloc(6 * sizeof(int));
-	
+
 	fseek(user.file.pointer, 2, SEEK_CUR);
 	for (i = 0; i < user.times.games - 1; i++)
 	{
@@ -788,15 +785,14 @@ void datasave(user_info user)
 			if (temp == '\n') break;
 		}
 	}
-
 	user.record[user.times.games - 1][0] = user.times.games;
 	user.record[user.times.games - 1][1] = user.times.target;
 	user.record[user.times.games - 1][2] = user.times.win;
 	user.record[user.times.games - 1][3] = user.times.lose;
 	user.record[user.times.games - 1][4] = user.times.draw;
 	user.record[user.times.games - 1][5] = user.final_win;
-	
-	for (j = 0; j < 6; j++)
+
+	for (j = 0; j < 6; j++)								/* 遗留不显示第二次记录的bug */
 	{
 		if (j < 5)
 			fprintf(user.file.pointer, "%d\t", user.record[user.times.games - 1][j]);
@@ -804,8 +800,6 @@ void datasave(user_info user)
 			fprintf(user.file.pointer, "%d\n", user.record[user.times.games - 1][j]);
 	}
 	fclose(user.file.pointer);
-	system("pause");
-
 	for (i = 0; i < user.times.games; i++)
 		free(user.record[i]);
 	free(user.record);
@@ -813,9 +807,104 @@ void datasave(user_info user)
 
 void review_UI(user_info user)
 {
+	int i, j;
+	char temp = 0;
+
 	system("cls");
 	printf_position("Game History\n", 44, 1);
-	system("pause");
+	user.file.pointer = fopen(user.file.name, "r+");
+	fseek(user.file.pointer, strlen(user.name.detail) + strlen(user.passwd.detail) + 3, SEEK_SET);
+	fscanf(user.file.pointer, "%d", &user.times.games);
+
+	user.record = (int*)malloc(user.times.games * sizeof(int));
+	for (i = 0; i < user.times.games; i++)
+		user.record[i] = (int*)malloc(6 * sizeof(int));
+	
+	fseek(user.file.pointer, 2, SEEK_CUR);
+	for (i = 0; i < user.times.games; i++)
+	{
+		for (j = 0; j < 6; j++)
+			fscanf(user.file.pointer, "%d", &user.record[i][j]);
+		while (1)
+		{
+			fscanf(user.file.pointer, "%c", &temp);
+			if (temp == '\n') break;
+		}
+	}
+	fclose(user.file.pointer);
+
+	printf_position("Games\tTotal\tWin\tLose\tDraw\tWinner\n", 24, 3);
+	printf_delta("", 24, 0);
+	for (i = 0; i < 46; i++)
+		printf("-");
+	printf("\n");
+	for (i = 0; i < user.times.games - 1; i++)			/* 遗留第二次无法记录的bug */
+	{
+		printf_delta("", 24, 0);
+		for (j = 0; j < 6; j++)
+			printf(" %d\t", user.record[i][j]);
+		printf("\n");
+	}
+	for (i = 0; i < user.times.games; i++)
+		free(user.record[i]);
+	free(user.record);
+
+	printf_delta("Press \"Enter\" to back to menu...", 34, 2);
+	while (getchar() != '\n');
+}
+
+void clear_UI(user_info user)
+{
+	char user_choice[256] = { 0 };							/* Declare user_choice array to store user choice string. */
+	int i = 0;												/* Declare i uses as run times of for loop. */
+	General_Result user_result = result_Error;				/* Declare user_result to store the option input result. */
+
+	system("cls");
+	printf_position("Would you really like to clear game history(y/n)?\n", 25, 0);
+	printf_delta("WARNING: This operation is irrevocable!\n", 30, 1);
+
+	while (user_result == result_Error)						/* When user input is illegal. */
+	{
+		printf_position("Your choice is: ", 42, 4);
+		rewind(stdin);
+		gets(user_choice);
+		rewind(stdin);
+
+		if (strlen(user_choice) == 1)						/* If the input is 1 character. */
+		{
+			switch (user_choice[0])							/* Judge the user choice. */
+			{
+			case 'y':
+			case 'n':
+				user_result = result_OK;					/* The choice is 'a' or 'b', input is legal. */
+				break;
+			default:
+				user_result = result_Error;					/* The choice is others, input is illegal. */
+			}
+		}
+		if (user_result == result_Error)					/* If the input is illegal. */
+		{
+			printf_delta("Your input is illegal, please try again!\n", 30, 1);
+			Sleep(1500);									/* Wait for 1500 ms. */
+			printf_delta("", 0, -3);						/* Change the position of cursor. */
+			for (i = 0; i < X_LENGTH; i++)					/* Clear incorrect output on console. */
+				printf(" ");
+			printf("\n\n");
+			for (i = 0; i < X_LENGTH; i++)
+				printf(" ");
+		}
+	}
+
+	if (user_choice[0] == 'y')								/* 遗留清除后第一次游戏无法添加记录的bug */
+	{
+		user.times.games = 0;
+		user.file.pointer = fopen(user.file.name, "w+");
+		fprintf(user.file.pointer, "%s,%s\n%d\n", user.name.detail, user.passwd.detail, user.times.games);
+		fclose(user.file.pointer);
+
+		printf_delta("Clear successfully!", 40, 1);
+		Sleep(1500);
+	}
 }
 
 /**
