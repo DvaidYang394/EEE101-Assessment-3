@@ -2,7 +2,7 @@
  * Copyright (C) 2018
  * @File name: 1718112_3.c
  * @Author: Ziqi Yang
- * @Version: 1.0.1
+ * @Version: 1.0.2
  * @Date: 2018-11-25
  * @Description: EEE101-Assessment-3 Project
  *				 A game of rock, scissors and paper for user to against computer.
@@ -95,6 +95,8 @@ typedef enum
 typedef struct
 {
 	char			detail[256];
+	long			start_pos;
+	General_Result	search_result;
 	General_Result	result;
 } name_info;
 
@@ -106,12 +108,6 @@ typedef struct
 
 typedef struct
 {
-	char			name[256];
-	FILE			*pointer;
-} file_info;
-
-typedef struct
-{
 	int				games;
 	int				target;
 	int				win;
@@ -119,6 +115,13 @@ typedef struct
 	int				lose;
 	General_Result	result;
 } times_info;
+
+typedef struct
+{
+	long			start_pos;
+	long			end_pos;
+	FILE			*pointer;
+} file_info;
 
 typedef struct
 {
@@ -135,6 +138,7 @@ typedef struct
 char welcome_UI(void);
 user_info login_UI(user_info user);
 user_info signup_UI(user_info user);
+user_info user_search(user_info user);
 char menu_UI(void);
 user_info times_UI(user_info user);
 General_Select computer_select_get(void);
@@ -155,10 +159,12 @@ void print_paper(Character_Size size, int bias_X, int bias_Y);
 int main(void)
 {
 	char welcome_choice, menu_choice;
-	user_info user = { {0,0},{0,0},{0,0,0,0,0,0},0,0,0,{0,0} };
+	user_info user = { {0,0,0,0},{0,0},{0,0,0,0,0,0},0,0,0,{0,0,0} };
 
 	system("mode con cols=100 lines=34");					/* Set the width of console is 100 and height is 34. */
 	system("color 1f");										/* Set the color of console background in blue and font in white. */
+	user.file.pointer = fopen("data.txt", "a+");
+	fclose(user.file.pointer);
 	do
 	{
 		welcome_choice = welcome_UI();
@@ -270,10 +276,7 @@ user_info login_UI(user_info user)
 		gets(user.name.detail);
 		rewind(stdin);
 
-		for (i = 0; i < 256; i++)
-			user.file.name[i] = user.name.detail[i];
-		strcat(user.file.name, ".txt");
-		user.file.pointer = fopen(user.file.name, "r");
+		user.file.pointer = fopen("data.txt", "r");
 		if (user.file.pointer == NULL)						/* �����Сд�޷����ֵ�bug */
 		{
 			printf("\nThe user does not exist, please try again!\n");
@@ -358,15 +361,12 @@ user_info signup_UI(user_info user)
 
 		if (user.name.result == result_OK)
 		{
-			for (i = 0; i < 256; i++)
-				user.file.name[i] = user.name.detail[i];
-			strcat(user.file.name, ".txt");
-			user.file.pointer = fopen(user.file.name, "r");
-			if (user.file.pointer != NULL)
+			user = user_search(user);
+			if (user.name.search_result == result_OK)
 			{
 				printf("The user has already exists, please try again!\n");
+				printf("%s is at %d.\n", user.name.detail, user.name.start_pos);
 				Sleep(1500);
-				fclose(user.file.pointer);
 				user.name.result = result_Error;
 				continue;
 			}
@@ -413,12 +413,46 @@ user_info signup_UI(user_info user)
 			printf_delta("", 0, -6);
 		}
 	}
-	user.file.pointer = fopen(user.file.name, "w+");
-	fprintf(user.file.pointer, "%s,%s\n%d\n", user.name.detail, user.passwd.detail, user.times.games);
+	user.file.pointer = fopen("data.txt", "a+");
+	fprintf(user.file.pointer, "%s,%s\n%d\n\n", user.name.detail, user.passwd.detail, user.times.games);
 	rewind(user.file.pointer);
 	fclose(user.file.pointer);
 	printf("\nAccount created successfully!");
 	Sleep(1000);
+	return user;
+}
+
+user_info user_search(user_info user)
+{
+	int i = 0;
+	char tmp = 0, compare[256] = { 0 };
+
+	user.name.search_result = result_Error;
+	user.file.pointer = fopen("data.txt", "r+");
+	while (tmp != EOF)
+	{
+		tmp = fgetc(user.file.pointer);
+		if (tmp != ',' && tmp != '\n')
+		{
+			compare[i] = tmp;
+			i++;
+		}
+		else
+		{
+			if (strcmp(compare, user.name.detail) == 0)
+			{
+				fseek(user.file.pointer, -(strlen(user.name.detail) + 1), SEEK_CUR);
+				user.name.start_pos = ftell(user.file.pointer);
+				user.name.search_result = result_OK;
+				break;
+			}
+			for (i = 0; i < 256; i++)
+				compare[i] = 0;
+			i = 0;
+		}
+	}
+	fclose(user.file.pointer);
+
 	return user;
 }
 
@@ -763,7 +797,7 @@ void datasave(user_info user)
 {
 	int i = 0, j = 0;
 	char temp = 0;
-	user.file.pointer = fopen(user.file.name, "r+");
+	user.file.pointer = fopen("data.txt", "r+");
 	fseek(user.file.pointer, strlen(user.name.detail) + strlen(user.passwd.detail) + 3, SEEK_SET);
 	fscanf(user.file.pointer, "%d", &user.times.games);
 	user.times.games++;
@@ -772,6 +806,10 @@ void datasave(user_info user)
 	user.record = malloc(user.times.games * sizeof(int));
 	for (i = 0; i < user.times.games; i++)
 		user.record[i] = malloc(6 * sizeof(int));
+
+	for (i = 0; i < user.times.games; i++)
+		for (j = 0; j < 6; j++)
+			user.record[i][j] = 0;
 
 	fseek(user.file.pointer, 2, SEEK_CUR);
 	for (i = 0; i < user.times.games - 1; i++)
@@ -790,7 +828,6 @@ void datasave(user_info user)
 	user.record[user.times.games - 1][3] = user.times.lose;
 	user.record[user.times.games - 1][4] = user.times.draw;
 	user.record[user.times.games - 1][5] = user.final_win;
-
 	for (j = 0; j < 6; j++)								/* ������ʾ�ڶ��μ�¼��bug */
 	{
 		if (j < 5)
@@ -812,7 +849,7 @@ void review_UI(user_info user)
 
 	system("cls");
 	printf_position("Game History\n", 41, 1);
-	user.file.pointer = fopen(user.file.name, "r+");
+	user.file.pointer = fopen("data.txt", "r+");
 	fseek(user.file.pointer, strlen(user.name.detail) + strlen(user.passwd.detail) + 3, SEEK_SET);
 	fscanf(user.file.pointer, "%d", &user.times.games);
 
@@ -820,6 +857,10 @@ void review_UI(user_info user)
 	for (i = 0; i < user.times.games; i++)
 		user.record[i] = malloc(6 * sizeof(int));
 	
+	for (i = 0; i < user.times.games; i++)
+		for (j = 0; j < 6; j++)
+			user.record[i][j] = 0;
+
 	fseek(user.file.pointer, 2, SEEK_CUR);
 	for (i = 0; i < user.times.games; i++)
 	{
@@ -833,16 +874,22 @@ void review_UI(user_info user)
 	}
 	fclose(user.file.pointer);
 
-	printf_position("Games\tTotal\tWin\tLose\tDraw\tWinner\n", 24, 3);
+	printf_position("Games\tTotal\tWin\tLose\tDraw\tResult\n", 24, 3);
 	printf_delta("", 24, 0);
 	for (i = 0; i < 46; i++)
 		printf("-");
 	printf("\n");
-	for (i = 0; i < user.times.games - 1; i++)			/* ����ڶ����޷���¼��bug */
+	for (i = 0; i < user.times.games; i++)
 	{
 		printf_delta("", 24, 0);
-		for (j = 0; j < 6; j++)
+		for (j = 0; j < 5; j++)
 			printf(" %d\t", user.record[i][j]);
+		switch (user.record[i][5])
+		{
+		case 0: printf("Lose"); break;
+		case 1: printf("Win"); break;
+		case 2: printf("Draw"); break;
+		}
 		printf("\n");
 	}
 	for (i = 0; i < user.times.games; i++)
@@ -898,7 +945,7 @@ void clear_UI(user_info user)
 	if (user_choice[0] == 'y')								/* ����������һ����Ϸ�޷���Ӽ�¼��bug */
 	{
 		user.times.games = 0;
-		user.file.pointer = fopen(user.file.name, "w+");
+		user.file.pointer = fopen("data.txt", "w+");
 		fprintf(user.file.pointer, "%s,%s\n%d\n", user.name.detail, user.passwd.detail, user.times.games);
 		rewind(user.file.pointer);
 		fclose(user.file.pointer);
