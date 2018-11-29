@@ -3,7 +3,7 @@
  * @File name: 1718112_3.c
  * @Author: Ziqi Yang
  * @Version: 1.0.2
- * @Date: 2018-11-25
+ * @Date: 2018-11-30
  * @Description: EEE101-Assessment-3 Project
  *				 A game of rock, scissors and paper for user to against computer.
 *************************************************************************************/
