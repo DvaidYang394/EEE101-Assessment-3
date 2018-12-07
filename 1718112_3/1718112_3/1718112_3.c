@@ -2,8 +2,8 @@
  * Copyright (C) 2018
  * @File name: 1718112_3.c
  * @Author: Ziqi Yang
- * @Version: 1.0.1
- * @Date: 2018-11-25
+ * @Version: 2.0.0
+ * @Date: 2018-12-7
  * @Description: EEE101-Assessment-3 Project
  *				 A game of rock, scissors and paper for user to against computer.
 *************************************************************************************/
@@ -753,7 +753,13 @@ void final_UI(user_info user)
 	default:
 		printf_delta("Nobody win the game =_=\n", 38, 0);
 	}
-
+	printf_delta("Your Score List:\n", 41, 1);
+	printf_delta("", 46, 1);
+	printf("Win: %d\n", user.times.win);
+	printf_delta("", 46, 1);
+	printf("Lose: %d\n", user.times.lose);
+	printf_delta("", 46, 1);
+	printf("Draw: %d\n", user.times.draw);
 	printf_delta("Press \"Enter\" to back to menu...", 34, 1);
 	while (getchar() != '\n');
 	datasave(user);
