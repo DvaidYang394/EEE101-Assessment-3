@@ -2,8 +2,8 @@
  * Copyright (C) 2018
  * @File name: 1718112_3.c
  * @Author: Ziqi Yang
- * @Version: 2.0.0
- * @Date: 2018-12-7
+ * @Version: 3.0.0
+ * @Date: 2018-12-11
  * @Description: EEE101-Assessment-3 Project
  *				 A game of rock, scissors and paper for user to against computer.
 *************************************************************************************/
@@ -769,11 +769,13 @@ void datasave(user_info user)
 {
 	int i = 0, j = 0;
 	char temp = 0;
+	long times_pos = 0;
 	user.file.pointer = fopen(user.file.name, "r+");
 	fseek(user.file.pointer, strlen(user.name.detail) + strlen(user.passwd.detail) + 3, SEEK_SET);
+	times_pos = ftell(user.file.pointer);
 	fscanf(user.file.pointer, "%d", &user.times.games);
 	user.times.games++;
-	fseek(user.file.pointer, -1, SEEK_CUR);				/* �����������10�ε�bug */
+	fseek(user.file.pointer, times_pos, SEEK_SET);
 	fprintf(user.file.pointer, "%d", user.times.games);
 	user.record = malloc(user.times.games * sizeof(int));
 	user.record[0] = malloc(6 * sizeof(int));
