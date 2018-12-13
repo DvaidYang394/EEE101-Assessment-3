@@ -2,8 +2,8 @@
  * Copyright (C) 2018
  * @File name: 1718112_3.c
  * @Author: Ziqi Yang
- * @Version: 3.0.0
- * @Date: 2018-12-11
+ * @Version: 4.0.0
+ * @Date: 2018-12-14
  * @Description: EEE101-Assessment-3 Project
  *				 A game of rock, scissors and paper for user to against computer.
 *************************************************************************************/
@@ -217,7 +217,6 @@ char welcome_UI(void)
 		printf_position("Your choice is: ",42,17);
 		rewind(stdin);
 		gets(user_choice);
-		rewind(stdin);
 
 		if (strlen(user_choice) == 1)						/* If the input is 1 character. */
 		{
@@ -247,7 +246,7 @@ char welcome_UI(void)
 
 	if (user_choice[0] == 'c')
 	{
-		printf_delta("The game will exit...", 34, 1);
+		printf_delta("The game will exit...", 39, 1);
 		Sleep(1000);
 	}
 
@@ -268,10 +267,8 @@ user_info login_UI(user_info user)
 		printf("Please input your user name: ");
 		rewind(stdin);
 		gets(user.name.detail);
-		rewind(stdin);
 
-		for (i = 0; i < 256; i++)
-			user.file.name[i] = user.name.detail[i];
+		strcpy(user.file.name, user.name.detail);
 		strcat(user.file.name, ".txt");
 		user.file.pointer = fopen(user.file.name, "r");
 		if (user.file.pointer == NULL)						/* �����Сд�޷����ֵ�bug */
@@ -289,23 +286,12 @@ user_info login_UI(user_info user)
 		printf_position("Please input your password: ", 0, 2);
 		rewind(stdin);
 		gets(user.passwd.detail);
-		rewind(stdin);
 
 		fseek(user.file.pointer, strlen(user.name.detail) + 1, SEEK_SET);
 		fscanf(user.file.pointer, "%s", target_user_passwd);
-		if (strlen(user.passwd.detail) != strlen(target_user_passwd))
+
+		if (strcmp(user.passwd.detail,target_user_passwd) != 0)
 			user.passwd.result = result_Error;
-		else
-		{
-			for (i = 0; i < strlen(user.passwd.detail); i++)
-			{
-				if (user.passwd.detail[i] != target_user_passwd[i])
-				{
-					user.passwd.result = result_Error;
-					break;
-				}
-			}
-		}
 
 		if (user.passwd.result == result_Error)					/* If the name input is illegal(name is space). */
 		{
@@ -341,7 +327,6 @@ user_info signup_UI(user_info user)
 		printf("Please input your user name: ");
 		rewind(stdin);
 		gets(user.name.detail);
-		rewind(stdin);
 
 		if (strlen(user.name.detail) != 0)
 		{
@@ -358,8 +343,7 @@ user_info signup_UI(user_info user)
 
 		if (user.name.result == result_OK)
 		{
-			for (i = 0; i < 256; i++)
-				user.file.name[i] = user.name.detail[i];
+			strcpy(user.file.name, user.name.detail);
 			strcat(user.file.name, ".txt");
 			user.file.pointer = fopen(user.file.name, "r");
 			if (user.file.pointer != NULL)
@@ -384,7 +368,6 @@ user_info signup_UI(user_info user)
 		printf_position("Please input your password(must between 6 and 15 digits and cannot include space): ", 0, 2);
 		rewind(stdin);
 		gets(user.passwd.detail);
-		rewind(stdin);
 
 		if (strlen(user.passwd.detail) >= 6 && strlen(user.passwd.detail) <= 15)
 		{
@@ -440,7 +423,6 @@ char menu_UI(void)
 		printf_position("Your choice is: ", 39, 11);
 		rewind(stdin);
 		gets(user_choice);
-		rewind(stdin);
 
 		if (strlen(user_choice) == 1)						/* If the input is 1 character. */
 		{
@@ -494,7 +476,6 @@ user_info times_UI(user_info user)
 		printf("Enter the times you want to play(must be a POSITIVE INTEGER and SMALLER THAN 50!): ");
 		rewind(stdin);
 		gets(user_times);
-		rewind(stdin);
 
 		if (strlen(user_times) != 0)
 		{
@@ -510,7 +491,8 @@ user_info times_UI(user_info user)
 		if (user.times.result == result_OK)						/* Check if the times is less than 50. */
 		{
 			user.times.target = atoi(user_times);
-			if (user.times.target <= 0 || user.times.target >= 50) user.times.result = result_Error;		/* The times is not less than 50, input illegal. */
+			if (user.times.target <= 0 || user.times.target >= 50) 
+				user.times.result = result_Error;		/* The times is not less than 50, input illegal. */
 		}
 		if (user.times.result == result_Error)
 		{
@@ -577,7 +559,6 @@ General_Select user_select_get(void)
 		printf_delta("Your choice is(r/s/p): ", 30, 0);
 		rewind(stdin);
 		gets(select_input);
-		rewind(stdin);
 
 		if (strlen(select_input) == 1)
 		{
@@ -876,7 +857,6 @@ void clear_UI(user_info user)
 		printf_position("Your choice is: ", 42, 4);
 		rewind(stdin);
 		gets(user_choice);
-		rewind(stdin);
 
 		if (strlen(user_choice) == 1)						/* If the input is 1 character. */
 		{
