@@ -2,8 +2,8 @@
  * Copyright (C) 2018
  * @File name: 1718112_3.c
  * @Author: Ziqi Yang
- * @Version: 4.0.0
- * @Date: 2018-12-14
+ * @Version: 5.0.0
+ * @Date: 2018-12-15
  * @Description: EEE101-Assessment-3 Project
  *				 A game of rock, scissors and paper for user to against computer.
 *************************************************************************************/
@@ -14,6 +14,7 @@
 #include <ctype.h>		/* For use of isdigit(). */
 #include <stdlib.h>		/* For use of system(), srand(), rand(). */
 #include <time.h>		/* For use of time(). */
+#include <conio.h>
 
 #define GET_ARRAY_LEN(array,len){len = (sizeof(array) / sizeof(array[0]));}		/* Get the length of array. */
 #define rounds_X_text_pos 13				/* Coordinates for some characters in console. */
@@ -208,6 +209,7 @@ user_info login_UI(user_info user)			/* Log in UI of the game. */
 {
 	int i = 0, j = 0;
 	char target_user_passwd[256] = { 0 };
+	char inputc = 0;
 
 	user.name.result = result_Error;
 	user.passwd.result = result_Error;
@@ -236,7 +238,38 @@ user_info login_UI(user_info user)			/* Log in UI of the game. */
 		user.passwd.result = result_OK;
 		printf_position("Please input your password: ", 0, 2);
 		rewind(stdin);
-		gets(user.passwd.detail);
+		inputc = 0;
+		i = 0;
+		for (i = 0; i < 256; i++)
+			user.passwd.detail[i] = 0;
+		i = 0;
+		while (inputc != '\r')
+		{
+			inputc = getch();
+			if (inputc != '\r' && inputc != '\0')
+			{
+				if (inputc != '\b')
+				{
+					user.passwd.detail[i] = inputc;
+					printf("*");
+					i += 1;
+				}
+				else
+				{
+					if (i > 0)
+					{
+						i -= 1;
+						user.passwd.detail[i] = '\0';
+						printf("\b");
+						printf("%c", user.passwd.detail[i]);
+						printf("\b");
+					}
+					else
+						i = 0;
+				}
+			}
+		}
+		printf("\n");
 
 		fseek(user.file.pointer, strlen(user.name.detail) + 1, SEEK_SET);
 		fscanf(user.file.pointer, "%s", target_user_passwd);
@@ -268,6 +301,7 @@ user_info login_UI(user_info user)			/* Log in UI of the game. */
 user_info signup_UI(user_info user)										/* Sign up UI of the game. */
 {
 	int i = 0, j = 0;
+	char inputc = 0;
 
 	user.name.result = result_Error;
 	user.passwd.result = result_Error;
@@ -318,7 +352,38 @@ user_info signup_UI(user_info user)										/* Sign up UI of the game. */
 	{
 		printf_position("Please input your password(must between 6 and 15 digits and cannot include space): ", 0, 2);
 		rewind(stdin);
-		gets(user.passwd.detail);
+		inputc = 0;
+		i = 0;
+		for (i = 0; i < 256; i++)
+			user.passwd.detail[i] = 0;
+		i = 0;
+		while (inputc != '\r')
+		{
+			inputc = getch();
+			if (inputc != '\r' && inputc != '\0')
+			{
+				if (inputc != '\b')
+				{
+					user.passwd.detail[i] = inputc;
+					printf("*");
+					i += 1;
+				}
+				else
+				{
+					if (i > 0)
+					{
+						i -= 1;
+						user.passwd.detail[i] = '\0';
+						printf("\b");
+						printf("%c", user.passwd.detail[i]);
+						printf("\b");
+					}
+					else
+						i = 0;
+				}
+			}
+		}
+		printf("\n");
 
 		if (strlen(user.passwd.detail) >= 6 && strlen(user.passwd.detail) <= 15)
 		{
