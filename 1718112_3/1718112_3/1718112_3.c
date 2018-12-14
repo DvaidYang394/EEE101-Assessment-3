@@ -8,10 +8,6 @@
  *				 A game of rock, scissors and paper for user to against computer.
 *************************************************************************************/
 
-/**
- * @brief	libraries for the project.
- * @date	2018-11-2	
- */
 #include <stdio.h>		/* For use of printf(), gets(), rewind(), sizeof(), getchar(). */
 #include <string.h>		/* For use of strlen(). */
 #include <Windows.h>	/* For use of Sleep(), GetStdHandle(), GetConsoleScreenBufferInfo(), SetConsoleCursorPosition(). */
@@ -19,116 +15,78 @@
 #include <stdlib.h>		/* For use of system(), srand(), rand(). */
 #include <time.h>		/* For use of time(). */
 
-/**
- * @brief	define for the project.
- * @date	2018-11-2						
- */
 #define GET_ARRAY_LEN(array,len){len = (sizeof(array) / sizeof(array[0]));}		/* Get the length of array. */
-#define rounds_X_text_pos 13				/* x-axis coordinates for character text in console in rounds UI. */
-#define rounds_Y_text_pos 29				/* y-axis coordinates for character text in console in rounds UI. */
-#define rounds_Y_character_pos 14			/* y-axis coordinates for character pictures in console in rounds UI. */
-#define rounds_X_current_result_pos 35		/* x-axis coordinates for current result text in console in rounds UI. */
-#define rounds_Y_current_result_pos 31		/* y-axis coordinates for current result text in console in rounds UI. */
-#define rounds_user_X_pos 50				/* x-axis coordinates for user character picture in console in rounds UI. */
+#define rounds_X_text_pos 13				/* Coordinates for some characters in console. */
+#define rounds_Y_text_pos 29
+#define rounds_Y_character_pos 14
+#define rounds_X_current_result_pos 35
+#define rounds_Y_current_result_pos 31
+#define rounds_user_X_pos 50
 #define X_LENGTH 100						/* The width of console. */
 
-/**
- * @enum	General_Result
- * @brief	a enum type to represent the input result.
- * @date	2018-11-2
- *
- * @var	result_OK		the input is legal.
- * @var	result_Error	the input is illegal.
- */
 typedef enum
 {
-	result_OK = 0,
-	result_Error
+	result_OK = 0,							/* The input is legal. */
+	result_Error							/* The input is illegal. */
 } General_Result;
 
-/**
- * @enum	Character_Size
- * @brief	a enum type to represent the size of the character picture needed to print.
- * @date	2018-11-2
- *
- * @var	mini	print mini size character picture.
- * @var normal	print normal size character picture.
- */
 typedef enum
 {
-	mini = 0,
-	normal
+	mini = 0,								/* Print mini size character picture. */
+	normal									/* Print normal size character picture. */
 } Character_Size;
 
-/**
-* @enum	Game_Player
-* @brief	a enum type to represent the winner of game.
-* @date	2018-11-2
-*
-* @var	computer	winner is computer.
-* @var	user		winner is user.
-* @var	none		nobody win.
-*/
 typedef enum
 {
-	computer = 0,
-	player,
-	none
+	computer = 0,							/* Winner is computer. */
+	player,									/* Winner is user. */
+	none									/* Nobody win. */
 } Game_Player;
 
-/**
-* @enum	General_Select
-* @brief	a enum type to represent the selected character of computer or user.
-* @date	2018-11-2
-*
-* @var	rock		rock selected.
-* @var	scissors	scissors selected.
-* @var	paper		paper selected.
-*/
 typedef enum
 {
-	rock = 0,
-	scissors,
-	paper
+	rock = 0,								/* Rock selected. */
+	scissors,								/* Scissors selected. */
+	paper									/* Paper selected. */
 } General_Select;
 
 typedef struct
 {
-	char			detail[256];
-	General_Result	result;
+	char			detail[256];			/* Name string. */
+	General_Result	result;					/* Name input result. */
 } name_info;
 
 typedef struct
 {
-	char			detail[256];
-	General_Result	result;
+	char			detail[256];			/* Password string. */
+	General_Result	result;					/* Password input result. */
 } passwd_info;
 
 typedef struct
 {
-	char			name[256];
-	FILE			*pointer;
+	char			name[256];				/* File name. */
+	FILE			*pointer;				/* Pointer of file. */
 } file_info;
 
 typedef struct
 {
-	int				games;
-	int				target;
-	int				win;
-	int				draw;
-	int				lose;
-	General_Result	result;
+	int				games;					/* Times of games. */
+	int				target;					/* Target games. */
+	int				win;					/* Win times. */
+	int				draw;					/* Draw times. */
+	int				lose;					/* Lose times. */
+	General_Result	result;					/* Games times input result. */
 } times_info;
 
 typedef struct
 {
-	name_info		name;
-	passwd_info		passwd;
-	times_info		times;
-	int				final_win;
-	int				**record;
-	int				login;
-	file_info		file;
+	name_info		name;					/* User name string. */
+	passwd_info		passwd;					/* User password string. */
+	times_info		times;					/* User times information. */
+	int				final_win;				/* Whether the user win or not. */
+	int				**record;				/* Game history. */
+	int				login;					/* Whether log in or not. */
+	file_info		file;					/* File information. */
 } user_info;
 
 /* Function declaration Start. */
@@ -161,42 +119,35 @@ int main(void)
 	system("color 1f");										/* Set the color of console background in blue and font in white. */
 	do
 	{
-		welcome_choice = welcome_UI();
+		welcome_choice = welcome_UI();						/* Welcome UI. */
 		if (welcome_choice == 'a')
 		{
-			user = login_UI(user);
+			user = login_UI(user);							/* Log in UI. */
 			while (user.login == 1)
 			{
-				menu_choice = menu_UI();
+				menu_choice = menu_UI();					/* Menu UI. */
 				if (menu_choice == 'a')
 				{
-					user = times_UI(user);
-					user = rounds_UI(user);
-					final_UI(user);
+					user = times_UI(user);					/* Get play times UI. */
+					user = rounds_UI(user);					/* Game rounds UI. */
+					final_UI(user);							/* Game result UI. */
 				}
 				else if (menu_choice == 'b')
-					review_UI(user);
+					review_UI(user);						/* History review UI. */
 				else if (menu_choice == 'c')
-					clear_UI(user);
+					clear_UI(user);							/* Clear history UI. */
 				else
 					user.login = 0;
 			}
 		}
 		else if (welcome_choice == 'b')
-			user = signup_UI(user);
+			user = signup_UI(user);							/* Sign up UI. */
 	} while (welcome_choice != 'c');
 
 	return 0;												/* Programm run successfully. */
 }
 
-/**
- * @name	welcome_UI
- * @brief	welcome UI of the game.
- * @date	2018-11-2
- *
- * @param	option_choice		the option user choose, which to decide start or exit game.
- */
-char welcome_UI(void)
+char welcome_UI(void)										/* Welcome UI of the game. */
 {
 	char user_choice[256] = { 0 };							/* Declare user_choice array to store user choice string. */
 	int i = 0;												/* Declare i uses as run times of for loop. */
@@ -225,7 +176,7 @@ char welcome_UI(void)
 			case 'a':
 			case 'b':
 			case 'c':
-				user_result = result_OK;					/* The choice is 'a' or 'b', input is legal. */
+				user_result = result_OK;					/* The choice is 'a', 'b' or 'c', input is legal. */
 				break;
 			default:
 				user_result = result_Error;					/* The choice is others, input is illegal. */
@@ -250,10 +201,10 @@ char welcome_UI(void)
 		Sleep(1000);
 	}
 
-	return user_choice[0];			/* Change the value on address option_choice to user_choice[0](to use in main function). */
+	return user_choice[0];
 }
 
-user_info login_UI(user_info user)
+user_info login_UI(user_info user)			/* Log in UI of the game. */
 {
 	int i = 0, j = 0;
 	char target_user_passwd[256] = { 0 };
@@ -271,7 +222,7 @@ user_info login_UI(user_info user)
 		strcpy(user.file.name, user.name.detail);
 		strcat(user.file.name, ".txt");
 		user.file.pointer = fopen(user.file.name, "r");
-		if (user.file.pointer == NULL)						/* �����Сд�޷����ֵ�bug */
+		if (user.file.pointer == NULL)									/* If the user doesn't exist, remind the user. */
 		{
 			printf("\nThe user does not exist, please try again!\n");
 			Sleep(1500);
@@ -280,7 +231,7 @@ user_info login_UI(user_info user)
 			user.name.result = result_OK;
 	}
 
-	while (user.passwd.result == result_Error)
+	while (user.passwd.result == result_Error)							/* Input and check the password. */
 	{
 		user.passwd.result = result_OK;
 		printf_position("Please input your password: ", 0, 2);
@@ -293,7 +244,7 @@ user_info login_UI(user_info user)
 		if (strcmp(user.passwd.detail,target_user_passwd) != 0)
 			user.passwd.result = result_Error;
 
-		if (user.passwd.result == result_Error)					/* If the name input is illegal(name is space). */
+		if (user.passwd.result == result_Error)							/* If the password is incorrect. */
 		{
 			printf("\nYour password is incorrect, please try again!\n");
 			Sleep(1500);
@@ -309,12 +260,12 @@ user_info login_UI(user_info user)
 	}
 	fclose(user.file.pointer);
 	printf("\nLog in successfully, please wait for a few seconds...");
-	user.login = 1;
+	user.login = 1;														/* Update the log in state. */
 	Sleep(1500);
 	return user;
 }
 
-user_info signup_UI(user_info user)
+user_info signup_UI(user_info user)										/* Sign up UI of the game. */
 {
 	int i = 0, j = 0;
 
@@ -330,11 +281,11 @@ user_info signup_UI(user_info user)
 
 		if (strlen(user.name.detail) != 0)
 		{
-			for (i = 0; i < strlen(user.name.detail); i++)			/* Check if the name is space. */
+			for (i = 0; i < strlen(user.name.detail); i++)				/* Check if the name is space. */
 			{
 				if (user.name.detail[i] != 32)
 				{
-					user.name.result = result_OK;				/* The name is not space, input legal. */
+					user.name.result = result_OK;						/* The name is not space, input legal. */
 					printf("\n");
 					break;
 				}
@@ -346,7 +297,7 @@ user_info signup_UI(user_info user)
 			strcpy(user.file.name, user.name.detail);
 			strcat(user.file.name, ".txt");
 			user.file.pointer = fopen(user.file.name, "r");
-			if (user.file.pointer != NULL)
+			if (user.file.pointer != NULL)								/* If the user has exist, remind the user. */
 			{
 				printf("The user has already exists, please try again!\n");
 				Sleep(1500);
@@ -356,7 +307,7 @@ user_info signup_UI(user_info user)
 			}
 		}
 
-		if (user.name.result == result_Error)					/* If the name input is illegal(name is space). */
+		if (user.name.result == result_Error)							/* If the name input is illegal(name is space). */
 		{
 			printf("\nThe name cannot be space, please try again!");
 			Sleep(1500);
@@ -372,17 +323,17 @@ user_info signup_UI(user_info user)
 		if (strlen(user.passwd.detail) >= 6 && strlen(user.passwd.detail) <= 15)
 		{
 			user.passwd.result = result_OK;
-			for (i = 0; i < strlen(user.passwd.detail); i++)			/* Check if the name is space. */
+			for (i = 0; i < strlen(user.passwd.detail); i++)			
 			{
-				if (user.passwd.detail[i] == 32)
+				if (user.passwd.detail[i] == 32)						/* If the password has space, input illegal. */
 				{
-					user.passwd.result = result_Error;				/* The name is not space, input legal. */
+					user.passwd.result = result_Error;
 					printf("\n");
 					break;
 				}
 			}
 		}
-		if (user.passwd.result == result_Error)					/* If the name input is illegal(name is space). */
+		if (user.passwd.result == result_Error)							/* If the password input is illegal. */
 		{
 			printf("\nYour password is illegal, please try again!\n");
 			Sleep(1500);
@@ -397,7 +348,8 @@ user_info signup_UI(user_info user)
 		}
 	}
 	user.file.pointer = fopen(user.file.name, "w+");
-	fprintf(user.file.pointer, "%s,%s\n%d\n", user.name.detail, user.passwd.detail, user.times.games);
+	fprintf(user.file.pointer, "%s,%s\n%d\n", user.name.detail, user.passwd.detail, user.times.games);		
+																		/* Write user information to the file. */
 	rewind(user.file.pointer);
 	fclose(user.file.pointer);
 	printf("\nAccount created successfully!");
@@ -407,9 +359,9 @@ user_info signup_UI(user_info user)
 
 char menu_UI(void)
 {
-	char user_choice[256] = { 0 };							/* Declare user_choice array to store user choice string. */
-	int i = 0;												/* Declare i uses as run times of for loop. */
-	General_Result user_result = result_Error;				/* Declare user_result to store the option input result. */
+	char user_choice[256] = { 0 };
+	int i = 0;
+	General_Result user_result = result_Error;
 
 	system("cls");
 	printf_position("Rock, Scissors and Paper GAME!\n\n", 35, 0);
@@ -417,14 +369,14 @@ char menu_UI(void)
 	printf_position("b. Review game history.", 38, 5);
 	printf_position("c. Clear game history.", 38, 7);
 	printf_position("d. Logout.", 38, 9);
-	
+
 	while (user_result == result_Error)						/* When user input is illegal. */
 	{
 		printf_position("Your choice is: ", 39, 11);
 		rewind(stdin);
 		gets(user_choice);
 
-		if (strlen(user_choice) == 1)						/* If the input is 1 character. */
+		if (strlen(user_choice) == 1)
 		{
 			switch (user_choice[0])							/* Judge the user choice. */
 			{
@@ -432,18 +384,18 @@ char menu_UI(void)
 			case 'b':
 			case 'c':
 			case 'd':
-				user_result = result_OK;					/* The choice is 'a' or 'b', input is legal. */
+				user_result = result_OK;
 				break;
 			default:
-				user_result = result_Error;					/* The choice is others, input is illegal. */
+				user_result = result_Error;
 			}
 		}
 		if (user_result == result_Error)					/* If the input is illegal. */
 		{
 			printf_delta("Your input is illegal, please try again!\n", 30, 1);
-			Sleep(1500);									/* Wait for 1500 ms. */
-			printf_delta("", 0, -3);						/* Change the position of cursor. */
-			for (i = 0; i < X_LENGTH; i++)					/* Clear incorrect output on console. */
+			Sleep(1500);
+			printf_delta("", 0, -3);
+			for (i = 0; i < X_LENGTH; i++)
 				printf(" ");
 			printf("\n\n");
 			for (i = 0; i < X_LENGTH; i++)
@@ -454,18 +406,9 @@ char menu_UI(void)
 	return user_choice[0];
 }
 
-/**
-* @name	info_input
-* @brief	information input UI of the game.
-* @date	2018-11-2
-*
-* @param	user_name_addr	the first element address of the user name array.
-* @param	game_times		the times user want to play.
-* @param	name_length		the length of user name.
-*/
-user_info times_UI(user_info user)
+user_info times_UI(user_info user)								/* Information input UI of the game. */
 {
-	int i = 0;																	/* Declare i uses as run times of for loop. */
+	int i = 0;
 	char user_times[256] = { 0 };
 	user.times.result = result_Error;
 
@@ -479,11 +422,11 @@ user_info times_UI(user_info user)
 
 		if (strlen(user_times) != 0)
 		{
-			for (i = 0; i < strlen(user_times); i++)		/* Check if the times input is number. */
+			for (i = 0; i < strlen(user_times); i++)			/* Check if the times input is number. */
 			{
 				if (!isdigit(user_times[i]))
 				{
-					user.times.result = result_Error;			/* The times is not number, input illegal. */
+					user.times.result = result_Error;
 					break;
 				}
 			}
@@ -492,7 +435,7 @@ user_info times_UI(user_info user)
 		{
 			user.times.target = atoi(user_times);
 			if (user.times.target <= 0 || user.times.target >= 50) 
-				user.times.result = result_Error;		/* The times is not less than 50, input illegal. */
+				user.times.result = result_Error;
 		}
 		if (user.times.result == result_Error)
 		{
@@ -504,14 +447,7 @@ user_info times_UI(user_info user)
 	return user;
 }
 
-/**
-* @name	computer_select_get
-* @brief	generate and print computer select result.
-* @date	2018-11-2
-*
-* @return	the character computer choose: rock, scissors or paper.
-*/
-General_Select computer_select_get(void)
+General_Select computer_select_get(void)					/* Generate and print computer select result. */
 {
 	int randnum = 0;										/* Declare randnum to store random number. */
 	General_Select computer_select;							/* Declare computer_select to store the character computer select. */
@@ -536,19 +472,12 @@ General_Select computer_select_get(void)
 	return computer_select;									/* Return the character computer selected. */
 }
 
-/**
-* @name	user_select_get
-* @brief	choose and print user select result.
-* @date	2018-11-3
-*
-* @return	the character user choose: rock, scissors or paper.
-*/
-General_Select user_select_get(void)
+General_Select user_select_get(void)						/*Choose and print user select result.  */
 {
-	char select_input[256] = { 0 };							/* Declare select_input to store the character user select in string. */
-	int i = 0;												/* Declare i uses as run times of for loop. */
-	General_Result select_result = result_Error;			/* Declare to store the select_input result. */
-	General_Select user_select;								/* Declare user_select to store the character user select. */
+	char select_input[256] = { 0 };	
+	int i = 0;
+	General_Result select_result = result_Error;
+	General_Select user_select;
 
 	printf("Please use a letter to choose what you want, the meanings are as follows:\n");
 	printf("r: Rock \t\t s: Scissors \t\t p: Paper\n\n");
@@ -604,24 +533,11 @@ General_Select user_select_get(void)
 	return user_select;															/* Return the character user selected. */
 }
 
-/**
-* @name	rounds_UI
-* @brief	rounds UI of the game.
-* @date	2018-11-3
-*
-* @param	user_name_addr	the first element address of the user name array.
-* @param	game_times		the times user want to play.
-* @param	name_length		the length of user name.
-* @return	the final winner of game: computer, user or none.
-*/
-user_info rounds_UI(user_info user)
+user_info rounds_UI(user_info user)							/* Rounds UI of the game. */
 {
-	int remain_games, i;		/* Declare variables:
-																			remain_games: store the remain times of game.
-																			computer_win: store the times of computer win.
-																			user_win: store the times of user win.*/
+	int remain_games, i;
 	General_Select computer_select, user_select;			/* Declare to store the character computer and user select. */
-	Game_Player current_winner;				/* Declare to store the current and final winner of game. */
+	Game_Player current_winner;								/* Declare to store the current and final winner of game. */
 
 	user.times.win = 0;
 	user.times.lose = 0;
@@ -637,9 +553,9 @@ user_info rounds_UI(user_info user)
 		printf_delta("", 40, 0);
 		printf("COMPUTER: %d\n\n", user.times.lose);
 
-		user_select = user_select_get();					/* Call user_select_get function and store user select to the variable. */
-		computer_select = computer_select_get();			/* Call computer_select_get function and store computer select to the variable. */
-		current_winner = compare(computer_select, user_select);		/* Call compare function and store current winner to the variable. */
+		user_select = user_select_get();
+		computer_select = computer_select_get();
+		current_winner = compare(computer_select, user_select);
 		if (current_winner == computer)
 		{
 			printf_position("Computer wins this time!\n", rounds_X_current_result_pos, rounds_Y_current_result_pos);
@@ -648,7 +564,7 @@ user_info rounds_UI(user_info user)
 		else if (current_winner == player)
 		{
 			printf_position("You win this time!\n", rounds_X_current_result_pos, rounds_Y_current_result_pos);
-			user.times.win++;										/* Add times of user win. */
+			user.times.win++;									/* Add times of user win. */
 		}
 		else
 		{
@@ -658,7 +574,7 @@ user_info rounds_UI(user_info user)
 
 		printf("\nPress \"Enter\" to continue game...");
 		rewind(stdin);
-		while (getchar() != '\n');							/* Get "Enter" to continue game. */
+		while (getchar() != '\n');								/* Get "Enter" to continue game. */
 		rewind(stdin);
 	}
 
@@ -670,23 +586,14 @@ user_info rounds_UI(user_info user)
 	return user;									/* Return the final winner of the game. */
 }
 
-/**
-* @name	compare
-* @brief	compare the character that computer and user select.
-* @date	2018-11-3
-*
-* @param	computer_select		the character computer select.
-* @param	user_select			the character user select.
-* @return	current winner: computer, user or none.
-*/
-Game_Player compare(General_Select computer_select, General_Select user_select)
+Game_Player compare(General_Select computer_select, General_Select user_select)			/* Compare the character that computer and user select. */
 {
-	Game_Player current_winner;								/* Declare current_winner to store current winner. */
+	Game_Player current_winner;										/* Declare current_winner to store current winner. */
 
 	if (computer_select == user_select) current_winner = none;		/* If the characters are same. Nobody win this time. */
 	else
 	{
-		switch (computer_select)							/* Logic to judge the winner. */
+		switch (computer_select)									/* Logic to judge the winner. */
 		{
 		case rock:
 			if (user_select == rock) current_winner = none;
@@ -705,22 +612,14 @@ Game_Player compare(General_Select computer_select, General_Select user_select)
 		}
 	}
 
-	return current_winner;									/* Return the current winner. */
+	return current_winner;											/* Return the current winner. */
 }
 
-/**
-* @name	final_UI
-* @brief	final UI of the game.
-* @date	2018-11-3
-*
-* @param	final_winner	the final winner.
-* @param	option_choice	the user choice that whether to play the game again or not.
-*/
-void final_UI(user_info user)
+void final_UI(user_info user)								/* Final UI of the game. */
 {
-	General_Result user_result = result_Error;				/* Declare user_result to store the user input result. */
-	char user_choice[256] = { 0 };							/* Declare user_choice to store user choice as string. */
-	int i = 0;												/* Declare i uses as run times of for loop. */
+	General_Result user_result = result_Error;
+	char user_choice[256] = { 0 };
+	int i = 0;
 
 	system("cls");
 	switch (user.final_win)									/* Print different sentences with different final winner. */
@@ -743,10 +642,10 @@ void final_UI(user_info user)
 	printf("Draw: %d\n", user.times.draw);
 	printf_delta("Press \"Enter\" to back to menu...", 34, 1);
 	while (getchar() != '\n');
-	datasave(user);
+	datasave(user);											/* Call datasave function to save the game data to the history in the file. */
 }
 
-void datasave(user_info user)
+void datasave(user_info user)								/* Save game data. */
 {
 	int i = 0, j = 0;
 	char temp = 0;
@@ -754,24 +653,24 @@ void datasave(user_info user)
 	user.file.pointer = fopen(user.file.name, "r+");
 	fseek(user.file.pointer, strlen(user.name.detail) + strlen(user.passwd.detail) + 3, SEEK_SET);
 	times_pos = ftell(user.file.pointer);
-	fscanf(user.file.pointer, "%d", &user.times.games);
-	user.times.games++;
+	fscanf(user.file.pointer, "%d", &user.times.games);		/* Read the value of game times. */
+	user.times.games++;										/* Game times add by 1. */
 	fseek(user.file.pointer, times_pos, SEEK_SET);
-	fprintf(user.file.pointer, "%d", user.times.games);
-	user.record = malloc(user.times.games * sizeof(int));
+	fprintf(user.file.pointer, "%d", user.times.games);		/* Change the value of game times. */
+	user.record = malloc(1 * sizeof(int));					/* Creat a dynamic array. */
 	user.record[0] = malloc(6 * sizeof(int));
 
 	for (i = 0; i < 6; i++)
 		user.record[0][i] = 0;
 
 	fseek(user.file.pointer, 0, SEEK_END);
-	user.record[0][0] = user.times.games;
+	user.record[0][0] = user.times.games;					/* Update the data of last game to the array. */
 	user.record[0][1] = user.times.target;
 	user.record[0][2] = user.times.win;
 	user.record[0][3] = user.times.lose;
 	user.record[0][4] = user.times.draw;
 	user.record[0][5] = user.final_win;
-	for (j = 0; j < 6; j++)								/* ������ʾ�ڶ��μ�¼��bug */
+	for (j = 0; j < 6; j++)									/* Update the data of last game to the file. */
 	{
 		if (j < 5)
 			fprintf(user.file.pointer, "%d\t", user.record[0][j]);
@@ -780,11 +679,11 @@ void datasave(user_info user)
 	}
 	rewind(user.file.pointer);
 	fclose(user.file.pointer);
-	free(user.record[0]);
+	free(user.record[0]);									/* Free. */
 	free(user.record);
 }
 
-void review_UI(user_info user)
+void review_UI(user_info user)								/* Review game history. */
 {
 	int i, j;
 	char temp = 0;
@@ -795,7 +694,7 @@ void review_UI(user_info user)
 	fseek(user.file.pointer, strlen(user.name.detail) + strlen(user.passwd.detail) + 3, SEEK_SET);
 	fscanf(user.file.pointer, "%d", &user.times.games);
 
-	user.record = malloc(user.times.games * sizeof(int));
+	user.record = malloc(user.times.games * sizeof(int));	/* Create a dynamic array according to the history game times. */
 	for (i = 0; i < user.times.games; i++)
 		user.record[i] = malloc(6 * sizeof(int));
 	
@@ -804,7 +703,7 @@ void review_UI(user_info user)
 			user.record[i][j] = 0;
 
 	fseek(user.file.pointer, 2, SEEK_CUR);
-	for (i = 0; i < user.times.games; i++)
+	for (i = 0; i < user.times.games; i++)					/* Read the game history. */
 	{
 		for (j = 0; j < 6; j++)
 			fscanf(user.file.pointer, "%d", &user.record[i][j]);
@@ -816,6 +715,7 @@ void review_UI(user_info user)
 	}
 	fclose(user.file.pointer);
 
+	/* Print the game history. */
 	printf_position("Games\tTotal\tWin\tLose\tDraw\tResult\n", 24, 3);
 	printf_delta("", 24, 0);
 	for (i = 0; i < 46; i++)
@@ -839,14 +739,14 @@ void review_UI(user_info user)
 	free(user.record);
 
 	printf_delta("Press \"Enter\" to back to menu...", 34, 2);
-	while (getchar() != '\n');
+	while (getchar() != '\n');								/* The method to return the menu. */
 }
 
-void clear_UI(user_info user)
+void clear_UI(user_info user)								/* Clear the game history. */
 {
-	char user_choice[256] = { 0 };							/* Declare user_choice array to store user choice string. */
-	int i = 0;												/* Declare i uses as run times of for loop. */
-	General_Result user_result = result_Error;				/* Declare user_result to store the option input result. */
+	char user_choice[256] = { 0 };
+	int i = 0;
+	General_Result user_result = result_Error;
 
 	system("cls");
 	printf_position("Would you really like to clear game history(y/n)?\n", 25, 0);
@@ -858,24 +758,24 @@ void clear_UI(user_info user)
 		rewind(stdin);
 		gets(user_choice);
 
-		if (strlen(user_choice) == 1)						/* If the input is 1 character. */
+		if (strlen(user_choice) == 1)
 		{
-			switch (user_choice[0])							/* Judge the user choice. */
+			switch (user_choice[0])
 			{
 			case 'y':
 			case 'n':
-				user_result = result_OK;					/* The choice is 'a' or 'b', input is legal. */
+				user_result = result_OK;					/* The choice is 'y' or 'n', input is legal. */
 				break;
 			default:
 				user_result = result_Error;					/* The choice is others, input is illegal. */
 			}
 		}
-		if (user_result == result_Error)					/* If the input is illegal. */
+		if (user_result == result_Error)
 		{
 			printf_delta("Your input is illegal, please try again!\n", 30, 1);
-			Sleep(1500);									/* Wait for 1500 ms. */
-			printf_delta("", 0, -3);						/* Change the position of cursor. */
-			for (i = 0; i < X_LENGTH; i++)					/* Clear incorrect output on console. */
+			Sleep(1500);
+			printf_delta("", 0, -3);
+			for (i = 0; i < X_LENGTH; i++)
 				printf(" ");
 			printf("\n\n");
 			for (i = 0; i < X_LENGTH; i++)
@@ -883,8 +783,9 @@ void clear_UI(user_info user)
 		}
 	}
 
-	if (user_choice[0] == 'y')								/* ����������һ����Ϸ�޷���Ӽ�¼��bug */
+	if (user_choice[0] == 'y')
 	{
+		/* Rewrite and init the user file. */
 		user.times.games = 0;
 		user.file.pointer = fopen(user.file.name, "w+");
 		fprintf(user.file.pointer, "%s,%s\n%d\n", user.name.detail, user.passwd.detail, user.times.games);
@@ -896,16 +797,7 @@ void clear_UI(user_info user)
 	}
 }
 
-/**
- * @name	printf_position
- * @brief	printf on specific position.
- * @date	2018-11-3
- *
- * @param	data	string needs to be print.
- * @param	init_X	x-axis coordinates of the first character.
- * @param	init_Y	y-axis coordinates of the first character.
- */
-void printf_position(char *data, int init_X, int init_Y)
+void printf_position(char *data, int init_X, int init_Y)	/* Printf on specific position. */
 {
 	HANDLE hd;												/* Declare hd to store handle to standard output. */
 	COORD position;											/* Declare position to store coordinates. */
@@ -918,19 +810,10 @@ void printf_position(char *data, int init_X, int init_Y)
 	printf("%s", data);										/* Print the data. */
 }
 
-/**
- * @name	printf_delta
- * @brief	printf on incremental position.
- * @date	2018-11-3
- *
- * @param	data	string needs to be print.
- * @param	init_X	x-axis coordinates of the first character.
- * @param	init_Y	y-axis coordinates of the first character.
- */
-void printf_delta(char *data, int delta_X, int delta_Y)
+void printf_delta(char *data, int delta_X, int delta_Y)		/* Printf on incremental position. */
 {
-	HANDLE hd;												/* Declare hd to store handle to standard output. */
-	COORD position;											/* Declare position to store coordinates. */
+	HANDLE hd;
+	COORD position;
 	CONSOLE_SCREEN_BUFFER_INFO console_buf;					/* Declare to store buffer info of console. */
 
 	hd = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -941,19 +824,10 @@ void printf_delta(char *data, int delta_X, int delta_Y)
 	position.Y += delta_Y;
 	
 	SetConsoleCursorPosition(hd, position);					/* Move the cursor to the set position of console. */
-	printf("%s", data);										/* Print the data. */
+	printf("%s", data);
 }
 
-/**
- * @name	print_rock
- * @brief	print the picture of rock.
- * @date	2018-11-3
- *
- * @param	size	mini or normal.
- * @param	bias_X	x-axis coordinates of the picture.
- * @param	bias_Y	y-axis coordinates of the picture.
- */
-void print_rock(Character_Size size, int bias_X, int bias_Y)
+void print_rock(Character_Size size, int bias_X, int bias_Y)	/* Print the picture of rock. */
 {
 	/* Declare x_normal, y_normal, x_mini, y_mini to store the coordinates of points in the picture. */
 	int x_normal[] = { 6,7,8,5,6,7,8,9,4,5,6,7,8,9,10,3,4,5,6,7,8,9,10,11,2,3,4,5,6,7,8,9,10,11,12,2,3,4,5,6,7,8,9,10,11,12,12,11,10,9,8,7,6,5,4,3,2,11,10,9,8,7,6,5,4,3,10, 9, 8, 7, 6, 5, 4, 9, 8, 7, 6, 5, 8, 7, 6 };
@@ -979,16 +853,7 @@ void print_rock(Character_Size size, int bias_X, int bias_Y)
 	}
 }
 
-/**
- * @name	print_scissors
- * @brief	print the picture of scissors.
- * @date	2018-11-3
- *
- * @param	size	mini or normal.
- * @param	bias_X	x-axis coordinates of the picture.
- * @param	bias_Y	y-axis coordinates of the picture.
- */
-void print_scissors(Character_Size size, int bias_X, int bias_Y)
+void print_scissors(Character_Size size, int bias_X, int bias_Y)	/* Print the picture of scissors. */
 {
 	/* Declare x_normal, y_normal, x_mini, y_mini to store the coordinates of points in the picture. */
 	int x_normal[] = { 3,4,11,2,5,10,3,5,9,4,8,5,7,6,7,5,8,4, 9, 5, 3,10, 5, 2,11, 4, 3 };
@@ -1014,16 +879,7 @@ void print_scissors(Character_Size size, int bias_X, int bias_Y)
 	}
 }
 
-/**
- * @name	print_paper
- * @brief	print the picture of paper.
- * @date	2018-11-3
- *
- * @param	size	mini or normal.
- * @param	bias_X	x-axis coordinates of the picture.
- * @param	bias_Y	y-axis coordinates of the picture.
- */
-void print_paper(Character_Size size, int bias_X, int bias_Y)
+void print_paper(Character_Size size, int bias_X, int bias_Y)		/* Print the picture of paper. */
 {
 	/* Declare x_normal, y_normal, x_mini, y_mini to store the coordinates of points in the picture. */
 	int x_normal[] = { 2,2,2,2,2,2,2,2, 2, 2, 2,2,2,2,2,2,2,2,2,2,2,2 };
