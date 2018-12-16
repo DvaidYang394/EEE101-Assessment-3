@@ -109,6 +109,7 @@ void printf_delta(char *data, int delta_X, int delta_Y);
 void print_rock(Character_Size size, int bias_X, int bias_Y);
 void print_scissors(Character_Size size, int bias_X, int bias_Y);
 void print_paper(Character_Size size, int bias_X, int bias_Y);
+void passwd_get(char *passwd);
 /* Function declaration End. */
 
 int main(void)
@@ -237,39 +238,7 @@ user_info login_UI(user_info user)			/* Log in UI of the game. */
 	{
 		user.passwd.result = result_OK;
 		printf_position("Please input your password: ", 0, 2);
-		rewind(stdin);
-		inputc = 0;
-		i = 0;
-		for (i = 0; i < 256; i++)
-			user.passwd.detail[i] = 0;
-		i = 0;
-		while (inputc != '\r')
-		{
-			inputc = getch();
-			if (inputc != '\r' && inputc != '\0')
-			{
-				if (inputc != '\b')
-				{
-					user.passwd.detail[i] = inputc;
-					printf("*");
-					i += 1;
-				}
-				else
-				{
-					if (i > 0)
-					{
-						i -= 1;
-						user.passwd.detail[i] = '\0';
-						printf("\b");
-						printf("%c", user.passwd.detail[i]);
-						printf("\b");
-					}
-					else
-						i = 0;
-				}
-			}
-		}
-		printf("\n");
+		passwd_get(user.passwd.detail);
 
 		fseek(user.file.pointer, strlen(user.name.detail) + 1, SEEK_SET);
 		fscanf(user.file.pointer, "%s", target_user_passwd);
@@ -351,39 +320,7 @@ user_info signup_UI(user_info user)										/* Sign up UI of the game. */
 	while (user.passwd.result == result_Error)
 	{
 		printf_position("Please input your password(must between 6 and 15 digits and cannot include space): ", 0, 2);
-		rewind(stdin);
-		inputc = 0;
-		i = 0;
-		for (i = 0; i < 256; i++)
-			user.passwd.detail[i] = 0;
-		i = 0;
-		while (inputc != '\r')
-		{
-			inputc = getch();
-			if (inputc != '\r' && inputc != '\0')
-			{
-				if (inputc != '\b')
-				{
-					user.passwd.detail[i] = inputc;
-					printf("*");
-					i += 1;
-				}
-				else
-				{
-					if (i > 0)
-					{
-						i -= 1;
-						user.passwd.detail[i] = '\0';
-						printf("\b");
-						printf("%c", user.passwd.detail[i]);
-						printf("\b");
-					}
-					else
-						i = 0;
-				}
-			}
-		}
-		printf("\n");
+		passwd_get(user.passwd.detail);
 
 		if (strlen(user.passwd.detail) >= 6 && strlen(user.passwd.detail) <= 15)
 		{
@@ -978,4 +915,42 @@ void print_paper(Character_Size size, int bias_X, int bias_Y)		/* Print the pict
 		}
 		printf("\n");
 	}
+}
+
+void passwd_get(char *passwd)
+{
+	char inputc = 0;
+	int i = 0;
+	for (i = 0; i < 256; i++)
+		passwd[i] = 0;
+	i = 0;
+	rewind(stdin);
+	while (inputc != '\r')
+	{
+		inputc = getch();
+		if (inputc != '\r' && inputc != '\0')
+		{
+			if (inputc != '\b')
+			{
+				passwd[i] = inputc;
+				printf("*");
+				i += 1;
+			}
+			else
+			{
+				if (i > 0)
+				{
+					i -= 1;
+					passwd[i] = '\0';
+					printf("\b");
+					printf("%c", passwd[i]);
+					printf("\b");
+				}
+				else
+					i = 0;
+			}
+		}
+	}
+	printf("\n");
+	return passwd;
 }
