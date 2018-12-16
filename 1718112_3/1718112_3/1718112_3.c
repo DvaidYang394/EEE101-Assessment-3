@@ -2,7 +2,7 @@
  * Copyright (C) 2018
  * @File name: 1718112_3.c
  * @Author: Ziqi Yang
- * @Version: 6.0.0
+ * @Version: 6.1.0
  * @Date: 2018-12-16
  * @Description: EEE101-Assessment-3 Project
  *				 A game of rock, scissors and paper for user to against computer.
@@ -199,7 +199,7 @@ user_info login_UI(user_info user)			/* Log in UI of the game. */
 	while (user.name.result == result_Error)
 	{
 		system("cls");
-		printf("Please input your user name: ");
+		printf("Please input your user name(log in): ");
 		rewind(stdin);
 		gets(user.name.detail);
 
@@ -259,7 +259,7 @@ user_info signup_UI(user_info user)										/* Sign up UI of the game. */
 	while (user.name.result == result_Error)
 	{
 		system("cls");
-		printf("Please input your user name: ");
+		printf("Please input your user name(sign up): ");
 		rewind(stdin);
 		gets(user.name.detail);
 

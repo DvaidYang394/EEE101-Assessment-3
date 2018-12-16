@@ -24,7 +24,6 @@
 \usepackage[english]{babel}
 \usepackage{sectsty}
 \usepackage{url, lipsum}
-\usepackage{indentfirst}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{caption}
@@ -58,7 +57,7 @@
 		\HRule{0.5pt} \\
 		\LARGE \textbf{EEE101 C Programming Report\\Assessment 3}
 		\HRule{2pt} \\ [0.5cm]
-		\normalsize Dec 14, 2018 \vspace*{5\baselineskip}}
+		\normalsize Dec 16, 2018 \vspace*{5\baselineskip}}
 	
 	\date{}
 	
@@ -83,13 +82,18 @@
 	\section{Problem Statement}
 	
 	\subsection{Introduction}
-	The program provide an interface through which user can play a user determined number of games of rock, scissors, paper against the computer. In the program, user need to sign up an account first, and log in the account to play games, view the game history, clear the game history or log out. The picture of characters which user and computer select, current scores of user and computer will be display in each game. After chosen number of games have been played, the program will determine who is the final winner and output the result and scores on the screen, and go back to the menu to ask user to start a new game, view the game history, clear the game history or log out. This program has compile and run successfully in Visual Studio The limitations of the input data are as follows:
+	The program provide an interface through which user can play a user determined number of games of rock, scissors, paper against the computer. In the program, user need to sign up an account first, and log in the account to play games, view the game history, clear the game history or log out. The picture of characters which user and computer select, current scores of user and computer will be display in each game. After chosen number of games have been played, the program will determine who is the final winner and output the result and scores on the screen, and go back to the menu to ask user to start a new game, view the game history, clear the game history or log out. This program has been compiled and run successfully in Visual Studio 2013, with the project which turn off the SDL mode. The limitations of the input data are as follows:
 	
 	\begin{enumerate}
-	\item In welcome UI (to choose start or exit game), user can input "a" or "b".
-	\item In information input UI, user can input name with any character but a full-space name, and game times number as a positive integer less than 50.
-	\item In rounds UI, user can input "r"(rock), "s"(scissors) and "p"(paper) to represent the character they choose.
-	\item In final UI, user can input "y" or "n" to decide whether to play again or not.
+	\item In welcome UI (to choose create or log in a account or exit game), user can input "a", "b" or "c".
+	\item In login UI (to log in the account which has been created), user can input the user name and password of the account they has sign up.
+	\item In sign up UI (to sign up a new account which has not been created), user can input any character but a full-space string as the user name of the account, and a string without space between 6 and 15 bit as the password of the account.
+	\item In menu UI (to choose what to do next), user can input "a", "b", "c" or "d" to start a new game, view the history, clear the history or log out.	
+	\item In times UI (to input the times of playing games), user can input a positive number less than 50 as the game times.
+	\item In rounds UI (to choose the character), user can input "r"(rock), "s"(scissors) and "p"(paper) to represent the character they choose.
+	\item In final UI, user can input "Enter" to back to the menu UI.
+	\item In review UI (to view the game history), user can input "Enter" to back to the menu UI.
+	\item In clear UI (to clear the game history), user can input "y" or "n" to choose whether to clear the game history or not.
 	\end{enumerate}
 
 	\subsection{Inputs}
