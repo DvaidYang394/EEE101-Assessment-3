@@ -2,19 +2,19 @@
  * Copyright (C) 2018
  * @File name: 1718112_3.c
  * @Author: Ziqi Yang
- * @Version: 5.0.0
- * @Date: 2018-12-15
+ * @Version: 6.0.0
+ * @Date: 2018-12-16
  * @Description: EEE101-Assessment-3 Project
  *				 A game of rock, scissors and paper for user to against computer.
 *************************************************************************************/
 
-#include <stdio.h>		/* For use of printf(), gets(), rewind(), sizeof(), getchar(). */
-#include <string.h>		/* For use of strlen(). */
-#include <Windows.h>	/* For use of Sleep(), GetStdHandle(), GetConsoleScreenBufferInfo(), SetConsoleCursorPosition(). */
-#include <ctype.h>		/* For use of isdigit(). */
-#include <stdlib.h>		/* For use of system(), srand(), rand(). */
-#include <time.h>		/* For use of time(). */
-#include <conio.h>
+#include <stdio.h>
+#include <string.h>
+#include <Windows.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <time.h>
+#include <conio.h>				/* Cal getch() function. */
 
 #define GET_ARRAY_LEN(array,len){len = (sizeof(array) / sizeof(array[0]));}		/* Get the length of array. */
 #define rounds_X_text_pos 13				/* Coordinates for some characters in console. */
@@ -145,35 +145,34 @@ int main(void)
 		else if (welcome_choice == 'b')
 			user = signup_UI(user);							/* Sign up UI. */
 	} while (welcome_choice != 'c');
-
+	printf_delta("The game will exit...", 39, 1);
+	Sleep(1000);
 	return 0;												/* Programm run successfully. */
 }
 
 char welcome_UI(void)										/* Welcome UI of the game. */
 {
-	char user_choice[256] = { 0 };							/* Declare user_choice array to store user choice string. */
+	char user_choice = 0;									/* Declare user_choice array to store user choice string. */
 	int i = 0;												/* Declare i uses as run times of for loop. */
 	General_Result user_result = result_Error;				/* Declare user_result to store the option input result. */
 
 	system("cls");
-	printf_position("Welcome to the EXCITING GAME!\n",34,0);
+	printf_position("Welcome to the EXCITING GAME!\n", 34, 0);
 	print_rock(mini, 21, 0);
 	print_scissors(mini, 40, 0);
 	print_paper(mini, 57, 0);
-	printf_position("Please choose the option with serial number before it.\n",22,9);
+	printf_position("Please choose the option with serial number before it.\n", 22, 9);
 	printf_delta("a. Log in your account.\n", 38, 1);
 	printf_delta("b. Create a new account.\n", 38, 1);
 	printf_delta("c. EXIT.\n", 38, 1);
 
 	while (user_result == result_Error)						/* When user input is illegal. */
 	{
-		printf_position("Your choice is: ",42,17);
 		rewind(stdin);
-		gets(user_choice);
-
-		if (strlen(user_choice) == 1)						/* If the input is 1 character. */
+		user_choice = getch();
+		if (user_choice != '\0')
 		{
-			switch (user_choice[0])							/* Judge the user choice. */
+			switch (user_choice)							/* Judge the user choice. */
 			{
 			case 'a':
 			case 'b':
@@ -184,26 +183,8 @@ char welcome_UI(void)										/* Welcome UI of the game. */
 				user_result = result_Error;					/* The choice is others, input is illegal. */
 			}
 		}
-		if (user_result == result_Error)					/* If the input is illegal. */
-		{
-			printf_delta("Your input is illegal, please try again!\n", 30, 1);
-			Sleep(1500);									/* Wait for 1500 ms. */
-			printf_delta("", 0, -3);						/* Change the position of cursor. */
-			for (i = 0; i < X_LENGTH; i++)					/* Clear incorrect output on console. */
-				printf(" ");
-			printf("\n\n");
-			for (i = 0; i < X_LENGTH; i++)
-				printf(" ");
-		}
 	}
-
-	if (user_choice[0] == 'c')
-	{
-		printf_delta("The game will exit...", 39, 1);
-		Sleep(1000);
-	}
-
-	return user_choice[0];
+	return user_choice;
 }
 
 user_info login_UI(user_info user)			/* Log in UI of the game. */
@@ -361,7 +342,7 @@ user_info signup_UI(user_info user)										/* Sign up UI of the game. */
 
 char menu_UI(void)
 {
-	char user_choice[256] = { 0 };
+	char user_choice = 0;
 	int i = 0;
 	General_Result user_result = result_Error;
 
@@ -374,13 +355,11 @@ char menu_UI(void)
 
 	while (user_result == result_Error)						/* When user input is illegal. */
 	{
-		printf_position("Your choice is: ", 39, 11);
 		rewind(stdin);
-		gets(user_choice);
-
-		if (strlen(user_choice) == 1)
+		user_choice = getch();
+		if (user_choice != '\0')
 		{
-			switch (user_choice[0])							/* Judge the user choice. */
+			switch (user_choice)							/* Judge the user choice. */
 			{
 			case 'a':
 			case 'b':
@@ -392,20 +371,8 @@ char menu_UI(void)
 				user_result = result_Error;
 			}
 		}
-		if (user_result == result_Error)					/* If the input is illegal. */
-		{
-			printf_delta("Your input is illegal, please try again!\n", 30, 1);
-			Sleep(1500);
-			printf_delta("", 0, -3);
-			for (i = 0; i < X_LENGTH; i++)
-				printf(" ");
-			printf("\n\n");
-			for (i = 0; i < X_LENGTH; i++)
-				printf(" ");
-		}
 	}
-
-	return user_choice[0];
+	return user_choice;
 }
 
 user_info times_UI(user_info user)								/* Information input UI of the game. */
@@ -445,7 +412,6 @@ user_info times_UI(user_info user)								/* Information input UI of the game. *
 			Sleep(1500);
 		}
 	}
-
 	return user;
 }
 
@@ -470,7 +436,6 @@ General_Select computer_select_get(void)					/* Generate and print computer sele
 		computer_select = paper;
 		print_paper(normal, 0, rounds_Y_character_pos);
 	}
-
 	return computer_select;									/* Return the character computer selected. */
 }
 
@@ -531,7 +496,6 @@ General_Select user_select_get(void)						/*Choose and print user select result.
 		user_select = paper;
 		print_paper(normal, rounds_user_X_pos, rounds_Y_character_pos);
 	}
-
 	return user_select;															/* Return the character user selected. */
 }
 
@@ -574,17 +538,15 @@ user_info rounds_UI(user_info user)							/* Rounds UI of the game. */
 			user.times.draw++;
 		}
 
-		printf("\nPress \"Enter\" to continue game...");
+		printf_position("Press \"Enter\" to continue game...", 31, 33);
 		rewind(stdin);
-		while (getchar() != '\n');								/* Get "Enter" to continue game. */
-		rewind(stdin);
+		while (getch() != '\r');								/* Get "Enter" to continue game. */
 	}
 
 	/* Compare the times of computer and user win and judge and final winner. */
 	if (user.times.lose > user.times.win) user.final_win = 0;
 	else if (user.times.lose < user.times.win) user.final_win = 1;
 	else user.final_win = 2;
-
 	return user;									/* Return the final winner of the game. */
 }
 
@@ -613,7 +575,6 @@ Game_Player compare(General_Select computer_select, General_Select user_select)	
 			if (user_select == paper) current_winner = none;
 		}
 	}
-
 	return current_winner;											/* Return the current winner. */
 }
 
@@ -643,7 +604,7 @@ void final_UI(user_info user)								/* Final UI of the game. */
 	printf_delta("", 46, 1);
 	printf("Draw: %d\n", user.times.draw);
 	printf_delta("Press \"Enter\" to back to menu...", 34, 1);
-	while (getchar() != '\n');
+	while (getch() != '\r');
 	datasave(user);											/* Call datasave function to save the game data to the history in the file. */
 }
 
@@ -740,29 +701,28 @@ void review_UI(user_info user)								/* Review game history. */
 		free(user.record[i]);
 	free(user.record);
 
-	printf_delta("Press \"Enter\" to back to menu...", 34, 2);
-	while (getchar() != '\n');								/* The method to return the menu. */
+	printf_delta("Press \"Enter\" to back to menu...", 31, 2);
+	while (getch() != '\r');								/* The method to return the menu. */
 }
 
 void clear_UI(user_info user)								/* Clear the game history. */
 {
-	char user_choice[256] = { 0 };
+	char user_choice = 0;
 	int i = 0;
 	General_Result user_result = result_Error;
 
 	system("cls");
 	printf_position("Would you really like to clear game history(y/n)?\n", 25, 0);
 	printf_delta("WARNING: This operation is irrevocable!\n", 30, 1);
+	printf_delta("Press \"y\" to clear or \"n\" to back to the menu.\n", 27, 1);
 
 	while (user_result == result_Error)						/* When user input is illegal. */
 	{
-		printf_position("Your choice is: ", 42, 4);
 		rewind(stdin);
-		gets(user_choice);
-
-		if (strlen(user_choice) == 1)
+		user_choice = getch();
+		if (user_choice != '\0')
 		{
-			switch (user_choice[0])
+			switch (user_choice)
 			{
 			case 'y':
 			case 'n':
@@ -772,20 +732,9 @@ void clear_UI(user_info user)								/* Clear the game history. */
 				user_result = result_Error;					/* The choice is others, input is illegal. */
 			}
 		}
-		if (user_result == result_Error)
-		{
-			printf_delta("Your input is illegal, please try again!\n", 30, 1);
-			Sleep(1500);
-			printf_delta("", 0, -3);
-			for (i = 0; i < X_LENGTH; i++)
-				printf(" ");
-			printf("\n\n");
-			for (i = 0; i < X_LENGTH; i++)
-				printf(" ");
-		}
 	}
 
-	if (user_choice[0] == 'y')
+	if (user_choice == 'y')
 	{
 		/* Rewrite and init the user file. */
 		user.times.games = 0;
@@ -917,9 +866,9 @@ void print_paper(Character_Size size, int bias_X, int bias_Y)		/* Print the pict
 	}
 }
 
-void passwd_get(char *passwd)
+void passwd_get(char *passwd)								/* Get the password in secret character(*). */
 {
-	char inputc = 0;
+	char inputc = 0;										/* Receive the character. */
 	int i = 0;
 	for (i = 0; i < 256; i++)
 		passwd[i] = 0;
@@ -928,15 +877,15 @@ void passwd_get(char *passwd)
 	while (inputc != '\r')
 	{
 		inputc = getch();
-		if (inputc != '\r' && inputc != '\0')
+		if (inputc != '\r' && inputc != '\0')				/* The input is not enter or \0 */
 		{
-			if (inputc != '\b')
+			if (inputc != '\b')								/* The input is not backspace. */
 			{
-				passwd[i] = inputc;
+				passwd[i] = inputc;							/* Character correct, record to the array. */
 				printf("*");
 				i += 1;
 			}
-			else
+			else											/* Delete last character. */
 			{
 				if (i > 0)
 				{
